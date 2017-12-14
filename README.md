@@ -1,5 +1,14 @@
 # UNSME - Ultimate Ninja Storm Model Editor
 
+# Changelog 0.4a
+- Fixed a bug that changed vertex order, thus breaking all the triangles and model data. Saving should work fine now.
+- Fixed /exportobj. Models are exported and imported correctly now.
+- You can either use file commands with the file explorer inputting only the command (like /openmodel) or you can also input a path like in earlier versions (like /openmodel C:/modelFolder).
+- Support for 32 bits.
+
+# Changelog 0.3c
+- Added command /invertnormals for lighting issues
+
 # Changelog 0.3b
 - .obj importing improved
 - Added a version checker everytime the tool is started
