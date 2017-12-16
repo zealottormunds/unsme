@@ -1,5 +1,10 @@
 # UNSME - Ultimate Ninja Storm Model Editor
 
+# Changelog 0.5a
+- Added tool box.
+- Added bone editor tool.
+- Command /github opens github.com/zealottormunds/unsme in your browser.
+
 # Changelog 0.4a
 - Fixed a bug that changed vertex order, thus breaking all the triangles and model data. Saving should work fine now.
 - Fixed /exportobj. Models are exported and imported correctly now.
