@@ -1,5 +1,7 @@
 # UNSME - Ultimate Ninja Storm Model Editor
 
+Latest release in: github.com/zealottormunds/unsme/releases
+
 # Changelog 0.7a:
 - Fixed the model unpacker. Now it's included with the editor.
 - Fixed mirroring when exporting obj files.
