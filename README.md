@@ -1,5 +1,10 @@
 # UNSME - Ultimate Ninja Storm Model Editor
 
+# Changelog 0.7a:
+- Fixed the model unpacker. Now it's included with the editor.
+- Fixed mirroring when exporting obj files.
+- Minor bugfixes.
+
 # Changelog 0.6a:
 - Added /openstage that scales the stages automatically so you can work with them.
 - Added /inverttriangles (I thought I'd done this in 0.5a already).
