@@ -2,6 +2,12 @@
 
 Latest release in: github.com/zealottormunds/unsme/releases
 
+# Changelog 0.8a:
+- You can now open and save .xfbin files directly.
+- Fixed triangle bug (again. I swear, this goddamn bug keeps coming back).
+- Performance improved. Opening and saving models with lots of vertices won't take as long anymore.
+- Fixed resolution problems.
+
 # Changelog 0.7a:
 - Fixed the model unpacker. Now it's included with the editor.
 - Fixed mirroring when exporting obj files.
