@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{A4A5A38B-F4D3-ED13-224A-F62D09301D17}</ProjectGuid>
+    <ProjectGuid>{9D3BE950-278E-7F41-3441-0297DA244264}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -54,10 +54,12 @@
      <Compile Include="Assets\script\Editor Window\Toolbox\w_ToolBox.cs" />
      <Compile Include="Assets\script\Editor Window\UV Editor\w_uvEditor.cs" />
      <Compile Include="Assets\script\Editor Window\Vertex Bone Editor\w_VertexBoneEditor.cs" />
+     <Compile Include="Assets\script\ModelLoad_Main.cs" />
      <Compile Include="Assets\script\RenderFile.cs" />
      <Compile Include="Assets\script\RenderMaterial.cs" />
      <Compile Include="Assets\script\Settings.cs" />
      <Compile Include="Assets\script\SphereSelect.cs" />
+     <Compile Include="Assets\script\UI\ListItem_Properties.cs" />
      <Compile Include="Assets\script\VertexObject.cs" />
      <None Include="Assets\unsmf\Vertex\Documentation for vertex lenght.txt" />
  <Reference Include="UnityEngine.UI">
@@ -81,8 +83,14 @@
  <Reference Include="UnityEngine.HoloLens">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityHoloLens/RuntimeEditor/UnityEngine.HoloLens.dll</HintPath>
  </Reference>
+ <Reference Include="System.Drawing.Design">
+ <HintPath>C:/Users/santi/Desktop/Nueva carpeta (2)/Zealot Games/UNS Model Editor/Assets/plugins/System.Drawing.Design.dll</HintPath>
+ </Reference>
+ <Reference Include="System.Drawing">
+ <HintPath>C:/Users/santi/Desktop/Nueva carpeta (2)/Zealot Games/UNS Model Editor/Assets/plugins/System.Drawing.dll</HintPath>
+ </Reference>
  <Reference Include="System.Windows.Forms">
- <HintPath>C:/Users/santi/Desktop/Zealot Games/Nsuns/Assets/plugins/System.Windows.Forms.dll</HintPath>
+ <HintPath>C:/Users/santi/Desktop/Nueva carpeta (2)/Zealot Games/UNS Model Editor/Assets/plugins/System.Windows.Forms.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
