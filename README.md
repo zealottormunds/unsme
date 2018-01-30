@@ -1,6 +1,29 @@
 # UNSME - Ultimate Ninja Storm Model Editor
 
+![unsmelogo](https://user-images.githubusercontent.com/33766519/35544569-cfeb386a-0549-11e8-8bdf-f2c8fa1acc6e.png)
+
 Latest release in: github.com/zealottormunds/unsme/releases
+
+# Changelog 1.2a:
+- Byte 6C gets fixed automatically.
+- Byte 80 gets fixed automatically.
+- Minor tweaks and bugfixes.
+
+# Changelog 1.1a:
+- Added weight editor.
+
+# Changelog 1.0a:
+- Added export options.
+- The tool can now open .unsmf decompiled models like in previous builds. They can also be saved with /saveunsmf.
+- Added /closefile.
+- Fixed the debug message when saving as .xfbin.
+
+# Changelog 0.9a:
+- Fixed all the size bugs.
+- Added support for more texture types.
+
+# Changelog 0.8b:
+- Fixed the bug when opening files.
 
 # Changelog 0.8a:
 - You can now open and save .xfbin files directly.
