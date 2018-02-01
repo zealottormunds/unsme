@@ -4,6 +4,14 @@
 
 Latest release in: github.com/zealottormunds/unsme/releases
 
+# Changelog 1.3a:
+- Rewritten most of the .obj import feature
+- Fixed UVs loading incorrectly in skeletonless models
+- The tool now supports .obj files from basically any editor
+- Errors with the tool now prompt a message box, which makes them easier to report.
+- Tweaks and bugfixes.
+- Performance improved.
+
 # Changelog 1.2a:
 - Byte 6C gets fixed automatically.
 - Byte 80 gets fixed automatically.
