@@ -10,7 +10,7 @@ Latest release in: github.com/zealottormunds/unsme/releases
 - Minor tweaks and bugfixes.
 - Herobrine removed.
 
-#Changelog 1.4a:
+# Changelog 1.4a:
 - Added support for multi-grouped meshes. Most meshes should work now without breaking triangles.
 - Fixed a model-breaking bug when importing low poly models.
 - Fixed a few bugs when saving an .xfbin
