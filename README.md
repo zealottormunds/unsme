@@ -4,6 +4,18 @@
 
 Latest release in: github.com/zealottormunds/unsme/releases
 
+# Changelog 1.5a:
+- 6C and 80 fix is now optional, as it fucks up meshes with multiple groups.
+- Only vertices you moved get saved now, so the rest don't get fucked up.
+- Minor tweaks and bugfixes.
+- Herobrine removed.
+
+#Changelog 1.4a:
+- Added support for multi-grouped meshes. Most meshes should work now without breaking triangles.
+- Fixed a model-breaking bug when importing low poly models.
+- Fixed a few bugs when saving an .xfbin
+- Stability improved
+
 # Changelog 1.3a:
 - Rewritten most of the .obj import feature
 - Fixed UVs loading incorrectly in skeletonless models
