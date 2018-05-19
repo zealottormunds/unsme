@@ -4,6 +4,13 @@
 
 Latest release in: github.com/zealottormunds/unsme/releases
 
+# Changelog 1.6a:
+- Obj importer has been rewritten again.
+- UV mapping issue has been fixed. Model cleaner is not needed anymore.
+- /importbones has been added.
+- When importing .obj files, the tool will look for a .obj.bones file with the same name as the model to do an automatic /importbones.
+- UI made prettier.
+
 # Changelog 1.5a:
 - 6C and 80 fix is now optional, as it fucks up meshes with multiple groups.
 - Only vertices you moved get saved now, so the rest don't get fucked up.
