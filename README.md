@@ -4,6 +4,17 @@
 
 Latest release in: github.com/zealottormunds/unsme/releases
 
+# Changelog 1.7a:
+- Added ortographic camera mode. When using it, you'll be able to select a region of vertices instead of using the selection sphere. Enable it with E, and then hold click to select an area of vertices. Alt + Click will deselect. It's important to do it slowly, because selecting too many vertices at the same time lags the program.
+- Improved the bone editor. A prompt will appear, asking if you want the tool to search for bone names in the model. It's known to work properly in 1cmnbod1 (for adult models) and rcmnbod1 (for child models), so it's really useful. The IDs in other models might not be as accurate, so I'd recommend using the normal bone editor for the rest.
+- Made the background darker (just a nitpick, but sometimes the vertices looked too similar to the background and they get mixed up).
+- Fixed the saving in models with 28 of length.
+- Discovered a new mesh type, with a length of 32. The tool can read those too, but saving might be weird.
+- /importbones has been disabled. It brought more confusion than anything.
+- Stability improved.
+- Minor bugfixes.
+- Added /impobjpos, in case you only modified the positions of the vertices of a model. This is really useful with models that have many groups, as it won't break the mesh.
+
 # Changelog 1.6a:
 - Obj importer has been rewritten again.
 - UV mapping issue has been fixed. Model cleaner is not needed anymore.
