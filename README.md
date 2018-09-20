@@ -4,6 +4,11 @@
 
 Latest release in: github.com/zealottormunds/unsme/releases
 
+# Changelog 1.75a:
+- Added the old weight saving mode (for people who were used to 1.6 or previous weights).
+- Added groups (/groups, /creategroup, /deletegroup, /addtogroup, /removefromgroup)
+- Rewritten the entire console system. It's faster now.
+
 # Changelog 1.7a:
 - Added ortographic camera mode. When using it, you'll be able to select a region of vertices instead of using the selection sphere. Enable it with E, and then hold click to select an area of vertices. Alt + Click will deselect. It's important to do it slowly, because selecting too many vertices at the same time lags the program.
 - Improved the bone editor. A prompt will appear, asking if you want the tool to search for bone names in the model. It's known to work properly in 1cmnbod1 (for adult models) and rcmnbod1 (for child models), so it's really useful. The IDs in other models might not be as accurate, so I'd recommend using the normal bone editor for the rest.
