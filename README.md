@@ -4,6 +4,8 @@
 
 Latest release in: github.com/zealottormunds/unsme/releases
 
+# If you're a JoJo modder, I really recommend checking SutandoTsukai181's branch of UNSME: https://github.com/SutandoTsukai181/unsme
+
 # Changelog 1.75a:
 - Added the old weight saving mode (for people who were used to 1.6 or previous weights).
 - Added groups (/groups, /creategroup, /deletegroup, /addtogroup, /removefromgroup)
