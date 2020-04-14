@@ -323,8 +323,8 @@ public class ConsoleCommandBehaviour : MonoBehaviour {
 
 		if(float.TryParse(Params[0], out X_))
 		{
-			R.SensitivityMouse = X_;
-			string CFG_Sensitivity = R.SensitivityMouse.ToString();
+			GetComponent<CameraMovement>().SensitivityMouse = X_;
+			string CFG_Sensitivity = GetComponent<CameraMovement>().SensitivityMouse.ToString();
 			R.ConsoleMessage("\n" + "<color=lime>Saved sensitivity settings.</color>");
 			System.IO.File.WriteAllText(UnityEngine.Application.dataPath + "\\cfg_sensitivity.cfg", CFG_Sensitivity);
 		}

@@ -12,19 +12,12 @@ using System.Windows.Forms;
 using System.Diagnostics;
 
 public class RenderFile : MonoBehaviour {
-	public bool canMove = false;
+
+    public CameraMovement c;
+
 	public bool inCommand = false;
 	public bool fileOpen = false;
 	public InputField CommandInput;
-
-	public GameObject cameraObject;
-	public GameObject Arrows;
-	public Transform Pointer;
-	public Camera mainCamera;
-	private float CameraSpeed = 100;
-	private Vector3 camRot = new Vector3(0, 0, 0);
-
-	public float SensitivityMouse = 200f;
 
 	public Text modelInformation;
 
@@ -103,8 +96,6 @@ public class RenderFile : MonoBehaviour {
     [HideInInspector]
     public List<List<int>> undo_sel = new List<List<int>>();
 
-	private GameObject box;
-
 	public GameObject SaveGUI;
 	private List<GameObject> OpenUIs = new List<GameObject>();
     [HideInInspector]
@@ -114,55 +105,13 @@ public class RenderFile : MonoBehaviour {
 
     void Start()
     {
-		box = GameObject.CreatePrimitive(PrimitiveType.Cube);
-		box.AddComponent<Rigidbody>();
-		box.AddComponent<SelectOrtographic>();
-		box.GetComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.Continuous;
-		box.GetComponent<Rigidbody>().useGravity = false;
-		box.GetComponent<Rigidbody>().freezeRotation = true;
+        c = this.GetComponent<CameraMovement>();
 
 		RenderedMesh = GameObject.Find("RENDERED MESH");
 		mf = RenderedMesh.GetComponent<MeshFilter>();
 		mr = RenderedMesh.GetComponent<MeshRenderer>();
 		mf.mesh = new Mesh();
 		mf.mesh.MarkDynamic();
-
-		if(File.Exists(UnityEngine.Application.dataPath + "\\cfg_sensitivity.cfg"))
-		{
-			SensitivityMouse = int.Parse(File.ReadAllText(UnityEngine.Application.dataPath + "\\cfg_sensitivity.cfg"));
-		}
-
-		StartCoroutine(CheckForUpdates());
-    }
-
-    IEnumerator CheckForUpdates()
-    {
-		WWW www = new WWW("https://pastebin.com/raw/AFmJNVdC");
-		yield return www;
-
-		string t = "";
-		for(int x = 1; x < www.text.Length; x++)
-		{
-			t = t + www.text[x];
-		}
-
-		float VERSION = 1.75f;
-
-		yield return t;
-
-		float v = float.Parse(t);
-		if(v < VERSION)
-		{
-			ConsoleMessage("\n<color=yellow>You seem to have a pre-release or development version. If you see any bugs, report them as soon as possible.</color>");
-		}
-		if(v == VERSION)
-		{
-			ConsoleMessage("\n<color=yellow>This is the last version available.</color>");
-		}
-		if(v > VERSION)
-		{
-			ConsoleMessage("\n<color=yellow>There's a new version available! Do /github to open the download page.</color>");
-		}
     }
 
     public void OpenModelFromXfbin(int VertexLength_, byte[] XfbinBytes, byte[] NDP3Bytes, int NDP3Index_, byte[] TriangleFile, byte[] TextureFile, byte[] VertexFile, int groupCount_, List<string> BoneList)
@@ -600,277 +549,14 @@ public class RenderFile : MonoBehaviour {
 		}
     }
 
-    public Camera PointCamera;
-    Vector3 selectionPointA = new Vector3();
-    Vector3 selectionPointB = new Vector3();
-    bool mode = false;
-    int ortographicMode = 0;
-
-	void Update () {
-		if(CommandInput.isFocused == true || fileOpen == false || Input.GetMouseButton(0))
-		{
-			canMove = false;
-		}
-		else
-		{
-			canMove = true;
-		}
-
-		if(Input.GetKeyDown(KeyCode.E) && fileOpen && WindowOpen == false && CommandInput.text == "" && mode == false)
-    	{
-    		if(PointCamera.gameObject.activeSelf == false)
-    		{
-    			mainCamera.gameObject.SetActive(false);
-    			PointCamera.gameObject.SetActive(true);
-    		}
-    		else
-    		{
-				mainCamera.gameObject.SetActive(true);
-    			PointCamera.gameObject.SetActive(false);
-    		}
-    	}
-
-		if(PointCamera.gameObject.activeSelf && fileOpen && CommandInput.text == "" && WindowOpen == false)
-		{
-			if(PointCamera.gameObject.activeSelf == true)
-			{
-				PointCamera.orthographicSize += Input.GetAxis("Mouse ScrollWheel") * 25;
-				if(PointCamera.orthographicSize < 10) PointCamera.orthographicSize = 10;
-				PointCamera.transform.GetChild(0).GetComponent<Camera>().orthographicSize = PointCamera.orthographicSize;
-			}
-
-            if (ortographicMode == 0)
-            {
-                if(Input.GetMouseButtonDown(1) && mode == false)
-                {
-                    ortographicMode = 1;
-                    GameObject.Find("OrtographicCameraCenter").transform.rotation = Quaternion.Euler(0, ortographicMode * 90, 0);
-                }
-
-                if (Input.GetMouseButtonDown(0))
-                {
-                    mode = true;
-                    selectionPointA = PointCamera.ScreenToWorldPoint(Input.mousePosition);
-                    selectionPointA.z = 0;
-                    box.GetComponent<Renderer>().material.shader = Shader.Find("Legacy Shaders/Transparent/Bumped Diffuse");
-                    Color a = new Color();
-                    ColorUtility.TryParseHtmlString("#FFD80021", out a);
-                    box.GetComponent<Renderer>().material.color = a;
-
-                    box.transform.localScale = Vector3.one * 50;
-                }
-
-                if (mode && box != null)
-                {
-                    selectionPointB = PointCamera.ScreenToWorldPoint(Input.mousePosition);
-                    selectionPointA.z = 0;
-                    box.transform.position = (selectionPointA + selectionPointB) / 2;
-                    box.transform.position = new Vector3(box.transform.position.x, box.transform.position.y, 0);
-                    box.transform.Rotate(0, 0, 0.000000001f);
-                    float hor = Math.Abs(selectionPointA.x - selectionPointB.x);
-                    float ver = Math.Abs(selectionPointA.y - selectionPointB.y);
-                    box.transform.localScale = new Vector3(hor, ver, 700);
-                }
-
-                if (Input.GetMouseButtonUp(0) && mode == true || WindowOpen && mode == true)
-                {
-                    mode = false;
-                    box.transform.localScale = box.transform.localScale + new Vector3(0, 0, 700);
-                    selectionPointA = Vector3.zero;
-                    selectionPointB = Vector3.zero;
-                    box.transform.localScale = Vector3.zero;
-
-                    MovementAxis();
-                }
-            }
-            else
-            {
-                if (Input.GetMouseButtonDown(1) && mode == false)
-                {
-                    ortographicMode = 0;
-                    GameObject.Find("OrtographicCameraCenter").transform.rotation = Quaternion.Euler(0, ortographicMode * 90, 0);
-                }
-
-                if (!WindowOpen && Input.GetMouseButtonDown(0))
-                {
-                    mode = true;
-                    selectionPointA = PointCamera.ScreenToWorldPoint(Input.mousePosition);
-                    selectionPointA.x = 0;
-                    box.GetComponent<Renderer>().material.shader = Shader.Find("Legacy Shaders/Transparent/Bumped Diffuse");
-                    Color a = new Color();
-                    ColorUtility.TryParseHtmlString("#FFD80021", out a);
-                    box.GetComponent<Renderer>().material.color = a;
-
-                    box.transform.localScale = Vector3.one * 50;
-                }
-
-                if (mode && box != null)
-                {
-                    selectionPointB = PointCamera.ScreenToWorldPoint(Input.mousePosition);
-                    selectionPointA.x = 0;
-                    box.transform.position = (selectionPointA + selectionPointB) / 2;
-                    box.transform.position = new Vector3(0, box.transform.position.y, box.transform.position.z);
-                    box.transform.Rotate(0.00000001f, 0, 0);
-                    float ver = Math.Abs(selectionPointA.y - selectionPointB.y);
-                    float dep = Math.Abs(selectionPointA.z - selectionPointB.z);
-                    box.transform.localScale = new Vector3(700, ver, dep);
-                }
-
-                if (Input.GetMouseButtonUp(0) && mode == true || WindowOpen && mode == true)
-                {
-                    mode = false;
-                    box.transform.localScale = box.transform.localScale + new Vector3(700, 0, 0);
-                    selectionPointA = Vector3.zero;
-                    selectionPointB = Vector3.zero;
-                    box.transform.localScale = Vector3.zero;
-
-                    MovementAxis();
-                }
-            }
-
-            /*if(Input.GetMouseButton(1) && (Input.GetAxis("Mouse X") > 0.1 || Input.GetAxis("Mouse X") < -0.1))
-            {
-                if (Input.GetAxisRaw("Mouse X") < 0 && Input.GetMouseButton(1))
-                {
-                    ort_camRot.y = ort_camRot.y + SensitivityMouse * Time.deltaTime * Input.GetAxisRaw("Mouse X");
-                }
-                if (Input.GetAxisRaw("Mouse X") > 0 && Input.GetMouseButton(1))
-                {
-                    ort_camRot.y = ort_camRot.y + SensitivityMouse * Time.deltaTime * Input.GetAxisRaw("Mouse X");
-                }
-
-                ortographicCenter.rotation = Quaternion.Euler(ortographicCenter.rotation.x, ortographicCenter.rotation.y + ort_camRot.y, ortographicCenter.rotation.z);
-            }*/
-		}
-	}
-
 	bool movingVert = false;
 	Vector3 tempVert = new Vector3();
 	Vector3 finalVert = new Vector3();
 
-	void MovementAxis()
-	{
-		if(selectedVertex.Count > 0)
-		{
-			Vector3 pos = Vector3.zero;
-			for(int x = 0; x < selectedVertex.Count; x++)
-			{
-				pos = pos + selectedVertex[x].transform.position;
-			}
-			pos = pos / selectedVertex.Count;
-			GameObject.Find("Movement Axis").transform.position = pos;
-		}
-		else
-		{
-			GameObject.Find("Movement Axis").transform.position = new Vector3(65535, 65535, 65535);
-		}
-	}
-
 	void FixedUpdate()
 	{
-		if(canMove && inCommand == false && WindowOpen == false)
+		if(c.canMove && inCommand == false && WindowOpen == false)
 		{
-			if(mainCamera.gameObject.activeSelf)
-			{
-				if(Input.GetKeyDown(KeyCode.LeftShift))
-				{
-					CameraSpeed = 200f;
-				}
-				if(Input.GetKeyUp(KeyCode.LeftShift))
-				{
-					CameraSpeed = 100f;
-				}
-				if (Input.GetAxis("Mouse ScrollWheel") > 0f )
-				{
-					cameraObject.transform.position = cameraObject.transform.position + mainCamera.transform.forward * 100 * Time.deltaTime;
-	 			}
-	 			else if (Input.GetAxis("Mouse ScrollWheel") < 0f )
-				{
-					cameraObject.transform.position = cameraObject.transform.position - mainCamera.transform.forward * 100 * Time.deltaTime;
-	 			}
-				if(Input.GetKey(KeyCode.W))
-				{
-					cameraObject.transform.position = cameraObject.transform.position + mainCamera.transform.forward * CameraSpeed * Time.deltaTime;
-				}
-				if(Input.GetKey(KeyCode.S))
-				{
-					cameraObject.transform.position = cameraObject.transform.position - mainCamera.transform.forward * CameraSpeed * Time.deltaTime;
-				}
-				if(Input.GetKey(KeyCode.A))
-				{
-					cameraObject.transform.position = cameraObject.transform.position - mainCamera.transform.right * CameraSpeed * Time.deltaTime;
-				}
-				if(Input.GetKey(KeyCode.D))
-				{
-					cameraObject.transform.position = cameraObject.transform.position + mainCamera.transform.right * CameraSpeed * Time.deltaTime;
-				}
-				if(Input.GetKey(KeyCode.X))
-				{
-					cameraObject.transform.position = cameraObject.transform.position + Vector3.up * CameraSpeed * Time.deltaTime;
-				}
-				if(Input.GetKey(KeyCode.C))
-				{
-					cameraObject.transform.position = cameraObject.transform.position - Vector3.up * CameraSpeed * Time.deltaTime;
-				}
-
-                if (camRot.x > 90)
-                {
-                    camRot.x = 90;
-                }
-                if (camRot.x < -90)
-                {
-                    camRot.x = -90;
-                }
-
-                // PRESSING RIGHT CLICK TO ROTATE THE CAMERA
-                if (Input.GetMouseButton(1))
-                {
-                    UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-                }
-                else
-                {
-                    UnityEngine.Cursor.lockState = CursorLockMode.None;
-                }
-
-                if (Input.GetAxisRaw("Mouse Y") > 0 && Input.GetMouseButton(1))
-                {
-                    camRot.x = camRot.x - SensitivityMouse * Time.deltaTime * Input.GetAxisRaw("Mouse Y");
-                }
-                if (Input.GetAxisRaw("Mouse Y") < 0 && Input.GetMouseButton(1))
-                {
-                    camRot.x = camRot.x - SensitivityMouse * Time.deltaTime * Input.GetAxisRaw("Mouse Y");
-                }
-                if (Input.GetAxisRaw("Mouse X") < 0 && Input.GetMouseButton(1))
-                {
-                    camRot.y = camRot.y + SensitivityMouse * Time.deltaTime * Input.GetAxisRaw("Mouse X");
-                }
-                if (Input.GetAxisRaw("Mouse X") > 0 && Input.GetMouseButton(1))
-                {
-                    camRot.y = camRot.y + SensitivityMouse * Time.deltaTime * Input.GetAxisRaw("Mouse X");
-                }
-
-                mainCamera.transform.rotation = Quaternion.Euler(mainCamera.transform.rotation.x + camRot.x, mainCamera.transform.rotation.y + camRot.y, mainCamera.transform.rotation.z + camRot.z);
-            }
-			else
-			{
-				if(Input.GetKey(KeyCode.W))
-				{
-					PointCamera.transform.position += PointCamera.transform.up * CameraSpeed * Time.deltaTime;
-				}
-				if(Input.GetKey(KeyCode.S))
-				{
-					PointCamera.transform.position -= PointCamera.transform.up * CameraSpeed * Time.deltaTime;
-				}
-				if(Input.GetKey(KeyCode.A))
-				{
-					PointCamera.transform.position -= PointCamera.transform.right * CameraSpeed * Time.deltaTime;
-				}
-				if(Input.GetKey(KeyCode.D))
-				{
-					PointCamera.transform.position += PointCamera.transform.right * CameraSpeed * Time.deltaTime;
-				}
-			}
-
 			if(fileOpen)
 			{
 				if((Input.GetKeyDown(KeyCode.LeftControl) && Input.GetKey(KeyCode.Z)) || (Input.GetKeyDown(KeyCode.Z) && Input.GetKey(KeyCode.LeftControl)))
@@ -907,7 +593,7 @@ public class RenderFile : MonoBehaviour {
 				for(int x = 0; x < selectedVertex.Count; x++)
 				{
 					GameObject vertex_ = selectedVertex[x];
-					vertex_.transform.position = vertex_.transform.position + mainCamera.transform.right / 10;
+					vertex_.transform.position = vertex_.transform.position + c.mainCamera.transform.right / 10;
 					meshVertices[int.Parse(vertex_.name)] = vertex_.transform.position;
 					mf.mesh.vertices = meshVertices.ToArray();
 				}
@@ -918,7 +604,7 @@ public class RenderFile : MonoBehaviour {
 				for(int x = 0; x < selectedVertex.Count; x++)
 				{
 					GameObject vertex_ = selectedVertex[x];
-					vertex_.transform.position = vertex_.transform.position - mainCamera.transform.right / 10;
+					vertex_.transform.position = vertex_.transform.position - c.mainCamera.transform.right / 10;
 					meshVertices[int.Parse(vertex_.name)] = vertex_.transform.position;
 					mf.mesh.vertices = meshVertices.ToArray();
 				}
@@ -928,7 +614,7 @@ public class RenderFile : MonoBehaviour {
 				for(int x = 0; x < selectedVertex.Count; x++)
 				{
 					GameObject vertex_ = selectedVertex[x];
-					vertex_.transform.position = vertex_.transform.position + mainCamera.transform.forward / 10;
+					vertex_.transform.position = vertex_.transform.position + c.mainCamera.transform.forward / 10;
 					meshVertices[int.Parse(vertex_.name)] = vertex_.transform.position;
 					mf.mesh.vertices = meshVertices.ToArray();
 				}
@@ -938,7 +624,7 @@ public class RenderFile : MonoBehaviour {
 				for(int x = 0; x < selectedVertex.Count; x++)
 				{
 					GameObject vertex_ = selectedVertex[x];
-					vertex_.transform.position = vertex_.transform.position - mainCamera.transform.forward / 10;
+					vertex_.transform.position = vertex_.transform.position - c.mainCamera.transform.forward / 10;
 					meshVertices[int.Parse(vertex_.name)] = vertex_.transform.position;
 					mf.mesh.vertices = meshVertices.ToArray();
 				}
@@ -963,8 +649,6 @@ public class RenderFile : MonoBehaviour {
 					mf.mesh.vertices = meshVertices.ToArray();
 				}
 			}
-
-			Arrows.transform.rotation = Quaternion.Euler(Vector3.forward);
 
 			modelInformation.text = selectedVertex.ToArray().Length.ToString() + " vertex selected";
 		}
@@ -4504,258 +4188,5 @@ public class RenderFile : MonoBehaviour {
 			ConsoleMessage("<color=orange>\nReverted last action</color>.");
 		}
 	}
-
-    public void OpenRE2(int VertexLength_, byte[] TriangleFile, byte[] TextureFile, byte[] VertexFile, bool stage, int mod)
-    {
-        if (fileOpen == false)
-        {
-            if (stage == true)
-            {
-                stageMode = true;
-            }
-            fileOpen = true;
-            selectedVertex.Clear();
-            vertexPosition.Clear();
-
-            for (int z_ = 0; z_ < GameObject.Find("Model Data").transform.childCount; z_++)
-            {
-                Destroy(GameObject.Find("Model Data").transform.Find(z_.ToString()));
-            }
-
-            meshVertices.Clear();
-            meshTriangles.Clear();
-            meshNormals.Clear();
-            TextureUVs.Clear();
-
-            byteLength = VertexLength_;
-            fileBytes = VertexFile;
-            triangleFile = TriangleFile;
-            textureMapFile = TextureFile;
-
-            DialogResult asd = DialogResult.No;
-            asd = MessageBox.Show("Do you want to invert the endianess?", "", MessageBoxButtons.YesNo);
-
-            if (asd == DialogResult.Yes)
-            {
-                endianess = true;
-            }
-
-            MessageBox.Show("RE2 mode");
-
-            for (int x = 0; x < (fileBytes.Length / byteLength); x++)
-            {
-                float vertexFloatX = 0;
-                float vertexFloatZ = 0;
-                float vertexFloatY = 0;
-
-                if (asd == DialogResult.No)
-                {
-                    vertexFloatX = 150 * BitConverter.ToSingle(BitConverter.GetBytes(fileBytes[0 + vertexOffset + (x * byteLength)] * 0x1000000 + fileBytes[1 + vertexOffset + (x * byteLength)] * 0x10000 + fileBytes[2 + vertexOffset + (x * byteLength)] * 0x100 + fileBytes[3 + vertexOffset + (x * byteLength)]), 0);
-                    vertexFloatZ = 150 * BitConverter.ToSingle(BitConverter.GetBytes(fileBytes[4 + vertexOffset + (x * byteLength)] * 0x1000000 + fileBytes[5 + vertexOffset + (x * byteLength)] * 0x10000 + fileBytes[6 + vertexOffset + (x * byteLength)] * 0x100 + fileBytes[7 + vertexOffset + (x * byteLength)]), 0);
-                    vertexFloatY = 150 * BitConverter.ToSingle(BitConverter.GetBytes(fileBytes[8 + vertexOffset + (x * byteLength)] * 0x1000000 + fileBytes[9 + vertexOffset + (x * byteLength)] * 0x10000 + fileBytes[10 + vertexOffset + (x * byteLength)] * 0x100 + fileBytes[11 + vertexOffset + (x * byteLength)]), 0);
-                }
-                else
-                {
-                    vertexFloatX = 150 * BitConverter.ToSingle(BitConverter.GetBytes(fileBytes[0 + vertexOffset + (x * byteLength)] * 1 + fileBytes[1 + vertexOffset + (x * byteLength)] * 0x100 + fileBytes[2 + vertexOffset + (x * byteLength)] * 0x10000 + fileBytes[3 + vertexOffset + (x * byteLength)] * 0x1000000), 0);
-                    vertexFloatZ = 150 * BitConverter.ToSingle(BitConverter.GetBytes(fileBytes[4 + vertexOffset + (x * byteLength)] * 1 + fileBytes[5 + vertexOffset + (x * byteLength)] * 0x100 + fileBytes[6 + vertexOffset + (x * byteLength)] * 0x10000 + fileBytes[7 + vertexOffset + (x * byteLength)] * 0x1000000), 0);
-                    vertexFloatY = 150 * BitConverter.ToSingle(BitConverter.GetBytes(fileBytes[8 + vertexOffset + (x * byteLength)] * 1 + fileBytes[9 + vertexOffset + (x * byteLength)] * 0x100 + fileBytes[10 + vertexOffset + (x * byteLength)] * 0x10000 + fileBytes[11 + vertexOffset + (x * byteLength)] * 0x1000000), 0);
-                }
-
-                if (stageMode == true)
-                {
-                    vertexFloatX = vertexFloatX / 20;
-                    vertexFloatZ = vertexFloatZ / 20;
-                    vertexFloatY = vertexFloatY / 20;
-                }
-
-                vertexPosition.Add(new Vector3(vertexFloatX, vertexFloatY, vertexFloatZ));
-
-                if (byteLength == 0x40)
-                {
-                    float normalFloatX = BitConverter.ToSingle(BitConverter.GetBytes(fileBytes[16 + vertexOffset + 0 + (x * byteLength)] * 0x1000000 + fileBytes[16 + vertexOffset + 1 + (x * byteLength)] * 0x10000 + fileBytes[16 + vertexOffset + 2 + (x * byteLength)] * 0x100 + fileBytes[16 + vertexOffset + 3 + (x * byteLength)]), 0);
-                    float normalFloatZ = BitConverter.ToSingle(BitConverter.GetBytes(fileBytes[16 + vertexOffset + 4 + (x * byteLength)] * 0x1000000 + fileBytes[16 + vertexOffset + 5 + (x * byteLength)] * 0x10000 + fileBytes[16 + vertexOffset + 6 + (x * byteLength)] * 0x100 + fileBytes[16 + vertexOffset + 7 + (x * byteLength)]), 0);
-                    float normalFloatY = BitConverter.ToSingle(BitConverter.GetBytes(fileBytes[16 + vertexOffset + 8 + (x * byteLength)] * 0x1000000 + fileBytes[16 + vertexOffset + 9 + (x * byteLength)] * 0x10000 + fileBytes[16 + vertexOffset + 10 + (x * byteLength)] * 0x100 + fileBytes[16 + vertexOffset + 11 + (x * byteLength)]), 0);
-                    meshNormals.Add(new Vector3(normalFloatX, normalFloatY, normalFloatZ));
-
-                    vertexBone.Add(new Vector3((float)fileBytes[35 + vertexOffset + (x * byteLength)], (float)fileBytes[39 + vertexOffset + (x * byteLength)], (float)fileBytes[43 + vertexOffset + (x * byteLength)]));
-
-                    float weightFloatX = BitConverter.ToSingle(BitConverter.GetBytes(fileBytes[48 + vertexOffset + 0 + (x * byteLength)] * 0x1000000 + fileBytes[48 + vertexOffset + 1 + (x * byteLength)] * 0x10000 + fileBytes[48 + vertexOffset + 2 + (x * byteLength)] * 0x100 + fileBytes[48 + vertexOffset + 3 + (x * byteLength)]), 0);
-                    float weightFloatZ = BitConverter.ToSingle(BitConverter.GetBytes(fileBytes[48 + vertexOffset + 4 + (x * byteLength)] * 0x1000000 + fileBytes[48 + vertexOffset + 5 + (x * byteLength)] * 0x10000 + fileBytes[48 + vertexOffset + 6 + (x * byteLength)] * 0x100 + fileBytes[48 + vertexOffset + 7 + (x * byteLength)]), 0);
-                    float weightFloatY = BitConverter.ToSingle(BitConverter.GetBytes(fileBytes[48 + vertexOffset + 8 + (x * byteLength)] * 0x1000000 + fileBytes[48 + vertexOffset + 9 + (x * byteLength)] * 0x10000 + fileBytes[48 + vertexOffset + 10 + (x * byteLength)] * 0x100 + fileBytes[48 + vertexOffset + 11 + (x * byteLength)]), 0);
-
-                    vertexWeight.Add(new Vector3(weightFloatX, weightFloatY, weightFloatZ));
-                }
-                else if (byteLength == 0x1C)
-                {
-                    float normalFloatX = toFloat(fileBytes[12 + (x * byteLength)] * 0x100 + fileBytes[13 + (x * byteLength)]);
-                    float normalFloatY = toFloat(fileBytes[14 + (x * byteLength)] * 0x100 + fileBytes[15 + (x * byteLength)]);
-                    float normalFloatZ = toFloat(fileBytes[16 + (x * byteLength)] * 0x100 + fileBytes[17 + (x * byteLength)]);
-                    meshNormals.Add(new Vector3(normalFloatX, normalFloatY, normalFloatZ));
-                }
-                else if (byteLength == 0x20)
-                {
-                    float normalFloatX = BitConverter.ToSingle(BitConverter.GetBytes(fileBytes[16 + vertexOffset + 0 + (x * byteLength)] * 0x1000000 + fileBytes[16 + vertexOffset + 1 + (x * byteLength)] * 0x10000 + fileBytes[16 + vertexOffset + 2 + (x * byteLength)] * 0x100 + fileBytes[16 + vertexOffset + 3 + (x * byteLength)]), 0);
-                    float normalFloatZ = BitConverter.ToSingle(BitConverter.GetBytes(fileBytes[16 + vertexOffset + 4 + (x * byteLength)] * 0x1000000 + fileBytes[16 + vertexOffset + 5 + (x * byteLength)] * 0x10000 + fileBytes[16 + vertexOffset + 6 + (x * byteLength)] * 0x100 + fileBytes[16 + vertexOffset + 7 + (x * byteLength)]), 0);
-                    float normalFloatY = BitConverter.ToSingle(BitConverter.GetBytes(fileBytes[16 + vertexOffset + 8 + (x * byteLength)] * 0x1000000 + fileBytes[16 + vertexOffset + 9 + (x * byteLength)] * 0x10000 + fileBytes[16 + vertexOffset + 10 + (x * byteLength)] * 0x100 + fileBytes[16 + vertexOffset + 11 + (x * byteLength)]), 0);
-                    meshNormals.Add(new Vector3(normalFloatX, normalFloatY, normalFloatZ));
-                }
-
-                GameObject actualObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                meshVertices.Add(vertexPosition[x]);
-
-                actualObject.AddComponent<VertexObject>();
-                actualObject.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
-                actualObject.transform.position = vertexPosition[x];
-                actualObject.name = x.ToString();
-                actualObject.transform.SetParent(GameObject.Find("Model Data").transform);
-                actualObject.transform.SetAsLastSibling();
-                actualObject.tag = "Vertex";
-                actualObject.layer = 9;
-            }
-
-            mf.mesh.vertices = vertexPosition.ToArray();
-
-            VertexCount = GameObject.Find("Model Data").transform.childCount;
-
-            if (triangleFile.Length > 1)
-            {
-                //ConsoleMessage(" <color=lime>TRIANGLES LOADED.</color>");
-
-                int[] num = new int[3];
-                int a = 0;
-                int q = 0;
-
-                for (int x = 0; x < (TriangleFile.Length / 6); x++)
-                {
-                    int[] tri = new int[3];
-                    tri[0] = (TriangleFile[(6 * x) + 1] * 0x100) + (TriangleFile[(6 * x) + 0]);
-                    tri[1] = (TriangleFile[(6 * x) + 3] * 0x100) + (TriangleFile[(6 * x) + 2]);
-                    tri[2] = (TriangleFile[(6 * x) + 5] * 0x100) + (TriangleFile[(6 * x) + 4]);
-
-                    meshTriangles.Add(tri[0]);
-                    meshTriangles.Add(tri[1]);
-                    meshTriangles.Add(tri[2]);
-
-                    mf.mesh.triangles = meshTriangles.ToArray();
-                }
-            }
-
-            if (textureMapFile.Length > 1)
-            {
-                int x = 4;
-                while (textureMapFile[x] != 0x100)
-                {
-                    x++;
-                }
-
-                if (x == 8)
-                {
-                    textureType = 0;
-                }
-                else
-                {
-                    textureType = 1;
-                }
-            }
-
-            if (byteLength == 64)
-            {
-                if (textureMapFile.Length > 1)
-                {
-                    if (textureType == 0)
-                    {
-                        for (int x = 0; x < VertexCount; x++)
-                        {
-                            float x_ = toFloat(textureMapFile[4 + (8 * x)] * 0x100 + textureMapFile[5 + (8 * x)]);
-                            float y_ = toFloat(textureMapFile[6 + (8 * x)] * 0x100 + textureMapFile[7 + (8 * x)]);
-
-                            TextureUVs.Add(new Vector2(x_, y_));
-                        }
-                    }
-                    else if (textureType == 1)
-                    {
-                        for (int x = 0; x < VertexCount; x++)
-                        {
-                            float x_ = toFloat(textureMapFile[4 + (12 * x)] * 0x100 + textureMapFile[5 + (12 * x)]);
-                            float y_ = toFloat(textureMapFile[6 + (12 * x)] * 0x100 + textureMapFile[7 + (12 * x)]);
-
-                            TextureUVs.Add(new Vector2(x_, y_));
-                        }
-                    }
-                }
-            }
-            else if (byteLength == 28)
-            {
-                for (int x = 0; x < VertexCount; x++)
-                {
-                    float x_ = toFloat(fileBytes[x * 24] * 0x100 + fileBytes[x * 25]);
-                    float y_ = toFloat(fileBytes[x * 26] * 0x100 + fileBytes[x * 27]);
-
-                    TextureUVs.Add(new Vector2(x_, y_));
-                }
-            }
-            else if (byteLength == 0x20)
-            {
-                for (int x = 0; x < VertexCount; x++)
-                {
-                    float x_ = BitConverter.ToSingle(
-                        BitConverter.GetBytes(
-                            fileBytes[x * 0x18] * 0x1000000 +
-                            fileBytes[x * 0x19] * 0x10000 +
-                            fileBytes[x * 0x1A] * 0x100 +
-                            fileBytes[x * 0x1B]), 0);
-
-                    float y_ = BitConverter.ToSingle(
-                        BitConverter.GetBytes(
-                            fileBytes[x * 0x1C] * 0x1000000 +
-                            fileBytes[x * 0x1D] * 0x10000 +
-                            fileBytes[x * 0x1E] * 0x100 +
-                            fileBytes[x * 0x1F]), 0);
-
-                    TextureUVs.Add(new Vector2(x_, y_));
-                }
-            }
-
-            DialogResult result_ = MessageBox.Show("Do you want to load a .png texture?", "Texture loading", MessageBoxButtons.YesNo);
-            if (result_ == DialogResult.Yes)
-            {
-                ////ConsoleMessage(" <color=cyan>TEXTURE IMAGE LOADED.</color>");
-                OpenFileDialog openFileDialog2 = new OpenFileDialog();
-                openFileDialog2.DefaultExt = "png";
-                openFileDialog2.ShowDialog();
-
-                if (openFileDialog2.FileName != "" && File.Exists(openFileDialog2.FileName))
-                {
-                    try
-                    {
-                        byte[] textureBytes = File.ReadAllBytes(openFileDialog2.FileName);
-                        Texture2D extTexture = new Texture2D(1024, 1024);
-                        extTexture.LoadImage(textureBytes);
-                        RenderedMesh.GetComponent<Renderer>().material.mainTexture = extTexture;
-                        RenderedMesh.GetComponent<RenderMaterial>().Materials_[0] = RenderedMesh.GetComponent<Renderer>().material;
-                    }
-                    catch (Exception)
-                    {
-                        ConsoleMessage("\n<color=orange>Error loading texture.</color>");
-                    }
-                }
-                else
-                {
-                    RenderedMesh.GetComponent<Renderer>().material = RenderedMesh.GetComponent<RenderMaterial>().Materials_[1];
-                }
-            }
-            else
-            {
-                //ConsoleMessage(" <color=red>TEXTURE IMAGE NOT FOUND.</color>");
-                RenderedMesh.GetComponent<Renderer>().material = RenderedMesh.GetComponent<RenderMaterial>().Materials_[1];
-            }
-
-            mf.mesh.uv = TextureUVs.ToArray();
-            mf.mesh.normals = meshNormals.ToArray();
-            FinishedDrawingModel = true;
-            fileOpen = true;
-            ConsoleMessage(" <color=lime>MODEL LOADED.</color>");
-        }
-    }
 
 }
