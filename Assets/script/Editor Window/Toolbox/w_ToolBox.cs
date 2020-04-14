@@ -25,11 +25,4 @@ public class w_ToolBox : MonoBehaviour {
 		window_boneEditor.SetActive(true);
 		window_boneEditor.GetComponent<w_VertexBoneEditor>().EnableWindow();
 	}
-
-	public void OpenUVEditor()
-	{
-		r_file.WindowOpen = true;
-		window_uvEditor.SetActive(true);
-		window_uvEditor.GetComponent<w_uvEditor>().OpenUVEditor();
-	}
 }

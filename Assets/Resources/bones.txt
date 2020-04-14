@@ -1,0 +1,185 @@
+trall
+pelvis
+spine
+spine1
+neck
+head
+head1
+face02
+face01
+face03
+dcl head right nub
+dcl head left nub
+r clavicle
+r upperarm
+r forearm
+r hand
+r finger0
+r finger01
+r finger02
+r finger1
+r finger11
+r finger12
+r finger2
+r finger21
+r finger22
+r finger3
+r finger31
+r finger32
+r finger4
+r finger41
+r finger42
+r arm bone04
+r arm bone05
+r arm bone06
+r arm bone03
+r arm bone02
+r arm bone01
+l clavicle
+l upperarm
+l forearm
+l hand
+l finger0
+l finger01
+l finger02
+l finger1
+l finger11
+l finger12
+l finger2
+l finger21
+l finger22
+l finger3
+l finger31
+l finger32
+l finger4
+l finger41
+l finger42
+l arm bone04
+l arm bone05
+l arm bone06
+l arm bone01
+l arm bone02
+l arm bone03
+l backcoat bone1
+l backcoat bone2
+r frontcoat bone1
+r frontcoat bone2
+r backcoat bone1
+r backcoat bone2
+l frontcoat bone1
+l frontcoat bone2
+l frontmantle bone1
+l frontmantle bone2
+l sidemantle bone1
+l sidemantle bone2
+r sidemantle bone1
+r sidemantle bone2
+l backmantle bone1
+l backmantle bone2
+r backmantle bone1
+r backmantle bone2
+r frontmantle bone1
+r frontmantle bone2
+dcl spine lf nub
+dcl spine lb nub
+dcl spine rb nub
+dcl spine rf nub
+l thigh
+l calf
+l foot
+l toe0
+l foot bone04
+l foot bone03
+l foot bone05
+l foot bone01
+l foot bone02
+r thigh
+r calf
+r foot
+r toe0
+r foot bone03
+r foot bone04
+r foot bone05
+r foot bone02
+r foot bone01
+l wear01
+l wear02
+fl wear01
+fl wear02
+bl wear01
+bl wear02
+fr wear
+fr wear02
+br wear
+br wear02
+r wear
+r wear02
+l frontcape bone1
+l frontcape bone2
+l frontcape bone3
+l frontcape bone4
+r frontcape bone1
+r frontcape bone2
+r frontcape bone3
+r frontcape bone4
+r sidecape bone1
+r sidecape bone2
+r backcape bone1
+r backcape bone2
+l backcape bone1
+l backcape bone2
+l sidecape bone1
+l sidecape bone2
+l sideskirt bone
+l sideskirt bonenub
+l frontskirt bone01
+l frontskirt bone02
+r sideskirt bone
+r sideskirt bonenub
+r backskirt bone
+r backskirt bonenub
+r frontskirt bone01
+r frontskirt bone02
+l backskirt bone
+l backskirt bonenub
+l inskirt bone01
+l inskirt bonenub
+r inskirt bone01
+r inskirt bonenub
+l frontkimono bone1
+l frontkimono bone2
+l frontkimono bone3
+l backkimono bone1
+l backkimono bone2
+r frontkimono bone1
+r frontkimono bone2
+r frontkimono bone3
+r sidekimono bone1
+r sidekimono bone2
+r backkimono bone1
+r backkimono bone2
+c ribbon bone0
+c ribbon bone1
+c ribbon bone2
+l ribbon bone1
+l ribbon bone2
+r ribbon bone1
+r ribbon bone2
+r frontskirt bone1
+r frontskirt bone2
+r frontskirt bone3
+r frontskirt bone4
+r backskirt bone1
+r backskirt bone2
+c backskirt bone1
+c backskirt bone2
+c frontskirt bone1
+c frontskirt bone2
+l frontskirt mkgbone1
+l frontskirt mkgbone2
+l frontskirt mkgbone3
+l frontskirt mkgbone4
+r frontskirt mkgbone1
+r frontskirt mkgbone2
+r frontskirt mkgbone3
+r frontskirt mkgbone4

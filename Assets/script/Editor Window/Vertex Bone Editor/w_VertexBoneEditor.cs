@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Windows.Forms;
 
 public class w_VertexBoneEditor : MonoBehaviour {
 	public int Vertex_;
@@ -9,6 +10,10 @@ public class w_VertexBoneEditor : MonoBehaviour {
 	public InputField Bone1Input;
 	public InputField Bone2Input;
 	public Text VerticeIndicator;
+
+	public InputField Weight0Input;
+	public InputField Weight1Input;
+	public InputField Weight2Input;
 
 	public void EnableWindow()
 	{
@@ -30,7 +35,7 @@ public class w_VertexBoneEditor : MonoBehaviour {
 		}
 		else
 		{
-			Debug.Log("Add a bone.");
+			MessageBox.Show("Cannot parse bone.");
 		}
 	}
 
@@ -45,7 +50,7 @@ public class w_VertexBoneEditor : MonoBehaviour {
 		}
 		else
 		{
-			Debug.Log("Add a bone.");
+			MessageBox.Show("Cannot parse bone.");
 		}
 	}
 
@@ -60,7 +65,52 @@ public class w_VertexBoneEditor : MonoBehaviour {
 		}
 		else
 		{
-			Debug.Log("Add a bone.");
+			MessageBox.Show("Cannot parse bone.");
+		}
+	}
+
+	public void SaveWeight0()
+	{
+		if(Weight0Input.text != "")
+		{
+			foreach(GameObject vertexSelected in GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().selectedVertex)
+			{
+				GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().ChangeWeight(int.Parse(vertexSelected.name), 0, float.Parse(Weight0Input.text));
+			}
+		}
+		else
+		{
+			MessageBox.Show("Cannot parse weight.");
+		}
+	}
+
+	public void SaveWeight1()
+	{
+		if(Weight1Input.text != "")
+		{
+			foreach(GameObject vertexSelected in GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().selectedVertex)
+			{
+				GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().ChangeWeight(int.Parse(vertexSelected.name), 1, float.Parse(Weight1Input.text));
+			}
+		}
+		else
+		{
+			MessageBox.Show("Cannot parse weight.");
+		}
+	}
+
+	public void SaveWeight2()
+	{
+		if(Weight2Input.text != "")
+		{
+			foreach(GameObject vertexSelected in GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().selectedVertex)
+			{
+				GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().ChangeWeight(int.Parse(vertexSelected.name), 2, float.Parse(Weight2Input.text));
+			}
+		}
+		else
+		{
+			MessageBox.Show("Cannot parse weight.");
 		}
 	}
 
@@ -81,6 +131,9 @@ public class w_VertexBoneEditor : MonoBehaviour {
 		Bone0Input.text = "";
 		Bone1Input.text = "";
 		Bone2Input.text = "";
+		Weight0Input.text = "";
+		Weight1Input.text = "";
+		Weight2Input.text = "";
 		GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().WindowOpen = false;
 		this.gameObject.SetActive(false);
 	}
