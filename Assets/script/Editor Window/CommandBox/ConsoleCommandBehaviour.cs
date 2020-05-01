@@ -323,8 +323,8 @@ public class ConsoleCommandBehaviour : MonoBehaviour {
 
 		if(float.TryParse(Params[0], out X_))
 		{
-			R.SensitivityMouse = X_;
-			string CFG_Sensitivity = R.SensitivityMouse.ToString();
+			GetComponent<CameraMovement>().SensitivityMouse = X_;
+			string CFG_Sensitivity = GetComponent<CameraMovement>().SensitivityMouse.ToString();
 			R.ConsoleMessage("\n" + "<color=lime>Saved sensitivity settings.</color>");
 			System.IO.File.WriteAllText(UnityEngine.Application.dataPath + "\\cfg_sensitivity.cfg", CFG_Sensitivity);
 		}
@@ -513,9 +513,9 @@ public class ConsoleCommandBehaviour : MonoBehaviour {
 		DialogResult dial = DialogResult.OK;
 		for(int x = 0; x < GameObject.Find("Model Data").transform.childCount; x++)
 		{
-			if(R.vertexBone[x] == Vector3.zero || R.vertexWeight[x] == Vector3.zero)
+			if(R.vertexBone[x] == Vector4.zero || R.vertexWeight[x] == Vector4.zero)
 			{
-				dial = MessageBox.Show("Vertex " + x.ToString() + ", B(0, 0, 0), W(0, 0, 0).", "Bone information", MessageBoxButtons.OKCancel);
+				dial = MessageBox.Show("Vertex " + x.ToString() + ", B(0, 0, 0, 0), W(0, 0, 0, 0).", "Bone information", MessageBoxButtons.OKCancel);
 			}
 			if(dial == DialogResult.Cancel)
 			{
@@ -816,7 +816,7 @@ public class ConsoleCommandBehaviour : MonoBehaviour {
 			DialogResult res = DialogResult.Yes;
 			if(R.groupCount > 1)
 			{
-				res = MessageBox.Show("This model has more than 1 group. Importing a brand new .obj is not recommended and the .xfbin might break. If you have exported this model with the tool and want to import it back after edition, then use /impobjpos. It will import all the vertex positions without changing the count.\n\nDo you want to import an .obj regardless?", "", MessageBoxButtons.YesNo);
+				//res = MessageBox.Show("This model has more than 1 group. Importing a brand new .obj is not recommended and the .xfbin might break. If you have exported this model with the tool and want to import it back after edition, then use /impobjpos. It will import all the vertex positions without changing the count.\n\nDo you want to import an .obj regardless?", "", MessageBoxButtons.YesNo);
 			}
 
 			if(res == DialogResult.Yes)

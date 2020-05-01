@@ -5,7 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/re2viewer.unity
     guid: 42ccf217aa661d349a4f46b4a8b213cd
+  - enabled: 1
+    path: Assets/modelViewer.unity
+    guid: c2b38647ab4b38e48922d168d2e19dff
   m_configObjects: {}
