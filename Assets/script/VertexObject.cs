@@ -9,10 +9,24 @@ public class VertexObject : MonoBehaviour {
 	void OnMouseOver () {
 		if(GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().WindowOpen == false && GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().inCommand == false)
 		{
-			if(GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().byteLength == 64)
-			{
-				GameObject.Find("VERTEXDATA").GetComponent<Text>().text = "VERTEX " + this.name + ":\nX = " + transform.position.x + "\nY = " + transform.position.y + "\nZ = " + transform.position.z + "\n" + GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().vertexBone[int.Parse(gameObject.name)].x.ToString() + " " + GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().vertexBone[int.Parse(gameObject.name)].y.ToString() + " " + GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().vertexBone[int.Parse(gameObject.name)].z.ToString() + "\n\nWeights:" + "\nX = " + GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().vertexWeight[int.Parse(gameObject.name)].x.ToString() + "\nY = " + GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().vertexWeight[int.Parse(gameObject.name)].y.ToString() + "\nZ = " + GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().vertexWeight[int.Parse(gameObject.name)].z.ToString();
-			}
+            if (GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().byteLength == 64)
+            {
+                GameObject.Find("VERTEXDATA").GetComponent<Text>().text =
+                    "VERTEX " + this.name +
+                    ":\nX = " + transform.position.x +
+                    "\nY = " + transform.position.y +
+                    "\nZ = " + transform.position.z +
+                    "\n" +
+                    GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().vertexBone[int.Parse(gameObject.name)].x.ToString() + " " +
+                    GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().vertexBone[int.Parse(gameObject.name)].y.ToString() + " " +
+                    GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().vertexBone[int.Parse(gameObject.name)].z.ToString() + " " +
+                    GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().vertexBone[int.Parse(gameObject.name)].w.ToString() +
+                    "\n\nWeights:" +
+                    "\nX = " + GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().vertexWeight[int.Parse(gameObject.name)].x.ToString() +
+                    "\nY = " + GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().vertexWeight[int.Parse(gameObject.name)].y.ToString() +
+                    "\nZ = " + GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().vertexWeight[int.Parse(gameObject.name)].z.ToString() +
+                    "\nW = " + GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().vertexWeight[int.Parse(gameObject.name)].w.ToString();
+            }
 			else if(GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().byteLength == 28)
 			{
 				GameObject.Find("VERTEXDATA").GetComponent<Text>().text = "VERTEX " + this.name + ":\nX = " + transform.position.x + "\nY = " + transform.position.y + "\nZ = " + transform.position.z;
