@@ -89,83 +89,83 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 16318}
+      Script: {instanceID: 9736}
     - Class: 114
-      Script: {instanceID: 17372}
+      Script: {instanceID: 9770}
     - Class: 114
-      Script: {instanceID: 17420}
+      Script: {instanceID: 9818}
     - Class: 114
-      Script: {instanceID: 17494}
+      Script: {instanceID: 9860}
     - Class: 114
-      Script: {instanceID: 17544}
+      Script: {instanceID: 9862}
     - Class: 114
-      Script: {instanceID: 17546}
+      Script: {instanceID: 9888}
     - Class: 114
-      Script: {instanceID: 17576}
+      Script: {instanceID: 9916}
     - Class: 114
-      Script: {instanceID: 17612}
+      Script: {instanceID: 9920}
     - Class: 114
-      Script: {instanceID: 17616}
+      Script: {instanceID: 9928}
     - Class: 114
-      Script: {instanceID: 17624}
+      Script: {instanceID: 9946}
     - Class: 114
-      Script: {instanceID: 17654}
+      Script: {instanceID: 9952}
     - Class: 114
-      Script: {instanceID: 17664}
+      Script: {instanceID: 9994}
     - Class: 114
-      Script: {instanceID: 17726}
+      Script: {instanceID: 10006}
     - Class: 114
-      Script: {instanceID: 17746}
+      Script: {instanceID: 10118}
     - Class: 114
-      Script: {instanceID: 17910}
+      Script: {instanceID: 10182}
     - Class: 114
-      Script: {instanceID: 18004}
+      Script: {instanceID: 10188}
     - Class: 114
-      Script: {instanceID: 18010}
+      Script: {instanceID: 10248}
     - Class: 114
-      Script: {instanceID: 18104}
+      Script: {instanceID: 10286}
     - Class: 114
-      Script: {instanceID: 18148}
+      Script: {instanceID: 10302}
     - Class: 114
-      Script: {instanceID: 18168}
+      Script: {instanceID: 10362}
     - Class: 114
-      Script: {instanceID: 18242}
+      Script: {instanceID: 10412}
     - Class: 114
-      Script: {instanceID: 18306}
+      Script: {instanceID: 10602}
     - Class: 114
-      Script: {instanceID: 18546}
+      Script: {instanceID: 10692}
     - Class: 114
-      Script: {instanceID: 18666}
+      Script: {instanceID: 10694}
     - Class: 114
-      Script: {instanceID: 18668}
+      Script: {instanceID: 10764}
     - Class: 114
-      Script: {instanceID: 18770}
+      Script: {instanceID: 10840}
     - Class: 114
-      Script: {instanceID: 18866}
+      Script: {instanceID: 10950}
     - Class: 114
-      Script: {instanceID: 19038}
+      Script: {instanceID: 11014}
     - Class: 114
-      Script: {instanceID: 19118}
+      Script: {instanceID: 11032}
     - Class: 114
-      Script: {instanceID: 19296}
+      Script: {instanceID: 11132}
     - Class: 114
-      Script: {instanceID: 19526}
+      Script: {instanceID: 11282}
     - Class: 114
-      Script: {instanceID: 19782}
+      Script: {instanceID: 11460}
     - Class: 114
-      Script: {instanceID: 19852}
+      Script: {instanceID: 11496}
     - Class: 114
-      Script: {instanceID: 19956}
+      Script: {instanceID: 11576}
     - Class: 114
-      Script: {instanceID: 19962}
+      Script: {instanceID: 11580}
     - Class: 114
-      Script: {instanceID: 20030}
+      Script: {instanceID: 11638}
     - Class: 114
-      Script: {instanceID: 20034}
+      Script: {instanceID: 11642}
     - Class: 114
-      Script: {instanceID: 20054}
+      Script: {instanceID: 11658}
     - Class: 114
-      Script: {instanceID: 20076}
+      Script: {instanceID: 11676}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 124
@@ -187,30 +187,6 @@ ScriptsOnlyBuild:
     - Class: 224
       Script: {instanceID: 0}
   scriptHashData:
-  - hash:
-      serializedVersion: 2
-      Hash: c2bb53145e6a6a7335a064bd6d8799c1
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: GroupSelection
-  - hash:
-      serializedVersion: 2
-      Hash: 303ad70ce203ad874efe2965d0fbcff9
-    assemblyName: Unity.Analytics.Tracker.dll
-    namespaceName: UnityEngine.Analytics
-    className: AnalyticsEventTracker
-  - hash:
-      serializedVersion: 2
-      Hash: 7fb9de8dcf73854b6b328eca1f7a6e6d
-    assemblyName: Unity.Analytics.Tracker.dll
-    namespaceName: UnityEngine.Analytics
-    className: AnalyticsTracker
-  - hash:
-      serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
-    assemblyName: Unity.Analytics.Editor.dll
-    namespaceName: UnityEditor.Analytics
-    className: AnalyticsEventTrackerEditor
   - hash:
       serializedVersion: 2
       Hash: 4bc4346a71a8df53a6b106f68ef3a190
@@ -357,6 +333,12 @@ ScriptsOnlyBuild:
     className: PhysicsRaycaster
   - hash:
       serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: FileRender
+  - hash:
+      serializedVersion: 2
       Hash: 3f0b469d844365c00a63de0437c9b29e
     assemblyName: com.unity.multiplayer-hlapi.Runtime.dll
     namespaceName: UnityEngine.Networking
@@ -429,6 +411,18 @@ ScriptsOnlyBuild:
     className: MovementWithAxis
   - hash:
       serializedVersion: 2
+      Hash: 303ad70ce203ad874efe2965d0fbcff9
+    assemblyName: Unity.Analytics.Tracker.dll
+    namespaceName: UnityEngine.Analytics
+    className: AnalyticsEventTracker
+  - hash:
+      serializedVersion: 2
+      Hash: 7fb9de8dcf73854b6b328eca1f7a6e6d
+    assemblyName: Unity.Analytics.Tracker.dll
+    namespaceName: UnityEngine.Analytics
+    className: AnalyticsTracker
+  - hash:
+      serializedVersion: 2
       Hash: cc4274b586df3c02688bac01b88bd16c
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.EventSystems
@@ -499,6 +493,12 @@ ScriptsOnlyBuild:
     assemblyName: com.unity.multiplayer-hlapi.Runtime.dll
     namespaceName: UnityEngine.Networking
     className: NetworkCallbacks
+  - hash:
+      serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Unity.Analytics.Editor.dll
+    namespaceName: UnityEditor.Analytics
+    className: AnalyticsEventTrackerEditor
   - hash:
       serializedVersion: 2
       Hash: 21e871d89bbce53c038fc75ad1b7c7f3
@@ -595,6 +595,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
     className: InputField
+  - hash:
+      serializedVersion: 2
+      Hash: c2bb53145e6a6a7335a064bd6d8799c1
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: GroupSelection
   - hash:
       serializedVersion: 2
       Hash: 5ad4aa237d47ac2bab17bacb672edf7a
@@ -820,4 +826,4 @@ ScriptsOnlyBuild:
   platform: 5
   scenePathNames:
   - Assets/modelViewer.unity
-  playerPath: C:/Users/santi/Documentos/GitHub/unsme_build/UNS Model Editor.exe
+  playerPath: C:/Users/santi/Documentos/GitHub/unsme_build/x64/UNS Model Editor.exe

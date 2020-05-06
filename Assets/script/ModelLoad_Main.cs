@@ -12,6 +12,8 @@ using System.Windows.Forms;
 using System.Diagnostics;
 
 public class ModelLoad_Main : MonoBehaviour {
+    public InputField Path;
+
 	private List<byte> fileBytes = new List<byte>();
 	private List<int> indexOfMeshes = new List<int>();
 	private int SizeHeader = 48;
@@ -36,13 +38,18 @@ public class ModelLoad_Main : MonoBehaviour {
 		SelectedIndex = 0;
 		OverallMeshCount = 0;
 
-		// NOW OPEN FILE
-		System.Windows.Forms.OpenFileDialog openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-		openFileDialog1.DefaultExt = "xfbin";
-		openFileDialog1.AddExtension = true;
-		openFileDialog1.ShowDialog();
+        //MessageBox.Show("test");
 
-		string pathToXfbin = openFileDialog1.FileName;
+        /*SaveFileDialog d = new SaveFileDialog();
+        d.ShowDialog();
+
+		// NOW OPEN FILE
+		OpenFileDialog openFileDialog1 = new OpenFileDialog();
+		//openFileDialog1.DefaultExt = "xfbin";
+		//openFileDialog1.AddExtension = true;
+		openFileDialog1.ShowDialog();*/
+
+        string pathToXfbin = Path.text;
 
 		if(pathToXfbin != "" && File.Exists(pathToXfbin))
 		{
@@ -441,69 +448,4 @@ public class ModelLoad_Main : MonoBehaviour {
     }
 
     //==================================================================
-    public void OpenRE2Model(int stage)
-    {
-        try
-        {
-            OpenFileDialog openFileDialog1 = new OpenFileDialog();
-            openFileDialog1.ShowDialog();
-
-            if (openFileDialog1.FileName == "" || File.Exists(openFileDialog1.FileName) == false)
-            {
-                MessageBox.Show("Please select a valid file.");
-                return;
-            }
-
-            string ModelPath = openFileDialog1.FileName;
-            openFileDialog1 = new OpenFileDialog();
-            openFileDialog1.ShowDialog();
-
-            if (openFileDialog1.FileName == "" || File.Exists(openFileDialog1.FileName) == false)
-            {
-                MessageBox.Show("Please select a valid file.");
-                return;
-            }
-
-            string LengthPath = openFileDialog1.FileName;
-            openFileDialog1 = new OpenFileDialog();
-            openFileDialog1.ShowDialog();
-
-            if (openFileDialog1.FileName == "" || File.Exists(openFileDialog1.FileName) == false)
-            {
-                MessageBox.Show("Please select a valid file.");
-                //return;
-            }
-
-            string TrianglePath = openFileDialog1.FileName;
-
-            int VertexLength = int.Parse(File.ReadAllText(LengthPath));
-            byte[] vertexBytes = File.ReadAllBytes(ModelPath);
-            byte[] triangleBytes = new byte[0];
-            byte[] textureCoordBytes = new byte[0];
-
-            if (TrianglePath != "") triangleBytes = File.ReadAllBytes(TrianglePath);
-
-            /*if(File.Exists(folderBrowserDialog1.SelectedPath + "\\modelTriangles.unsmf") == true)
-            {
-                textureCoordBytes = File.ReadAllBytes(folderBrowserDialog1.SelectedPath + "\\modelTextureCoords.unsmf");
-            }*/
-
-            if (stage == 1)
-            {
-                stageMode = true;
-            }
-
-            DialogResult Mode_ = MessageBox.Show("Set mode to \'CUSTOM\'?", "", MessageBoxButtons.YesNo);
-
-            if (Mode_ == DialogResult.No) GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().OpenRE2(VertexLength, triangleBytes, textureCoordBytes, vertexBytes, stageMode, 0);
-            else GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().OpenRE2(VertexLength, triangleBytes, textureCoordBytes, vertexBytes, stageMode, 20);
-
-            Destroy(GameObject.Find("Welcome Screen"));
-        }
-        catch (Exception e)
-        {
-            stageMode = false;
-            UnityEngine.Debug.Log(e.Message);
-        }
-    }
 }

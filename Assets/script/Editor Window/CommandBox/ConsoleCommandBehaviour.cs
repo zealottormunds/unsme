@@ -27,7 +27,8 @@ public class ConsoleCommandBehaviour : MonoBehaviour {
 		AddCommand("/help:", 1, "COMMAND -> shows a description of a certain command.");
 		AddCommand("/closefile", 0, "-> closes the current file.");
 		AddCommand("/loadtexture", 0, "-> loads a texture from a .png, .jpg or .bmp file.");
-		AddCommand("/sensitivity", 1, "NUMBER -> sets the sensitivity of the mouse view.");
+        AddCommand("/loadtexture:", -1, "PATH -> loads a texture from a .png, .jpg or .bmp file.");
+        AddCommand("/sensitivity", 1, "NUMBER -> sets the sensitivity of the mouse view.");
 
 		AddCommand("/translate", 3, "X Y Z -> translates the selected vertices X Y Z units. Example: /translate 0 2 0 will translate the vertices 2 points up.");
 		AddCommand("/setpos", 3, "X Y Z -> moves the selected vertices to the same point in worldspace. Example: /setpos % 2 % will set the vertices Y position to 2 while mantaining the X and Z the same as they were.");
@@ -57,11 +58,11 @@ public class ConsoleCommandBehaviour : MonoBehaviour {
 		AddCommand("/lighting", 1, "NUMBER -> changes the state of lighting. 0 = disabled, 1 = enabled.");
 
 		AddCommand("/importobj", 0, "-> shows a file explorer to import an .obj file");
-		AddCommand("/importobj:", 1, "PATH -> imports an .obj file from a path");
+		AddCommand("/importobj:", -1, "PATH -> imports an .obj file from a path");
 		AddCommand("/impobjpos", 0, "-> shows a file explorer to import only the vertices of an .obj file. Useful if there is no need to change the triangles.");
 		AddCommand("/impobjpos:", 1, "PATH -> shows a file explorer to import only the vertices of an .obj file located in PATH. Useful if there is no need to change the triangles.");
 		AddCommand("/exportobj", 0, "-> exports an .obj file of the actual model.");
-		AddCommand("/exportobj:", 1, "PATH -> exports an .obj file of the actual model in the desired PATH.");
+		AddCommand("/exportobj:", -1, "PATH -> exports an .obj file of the actual model in the desired PATH.");
 
         AddCommand("/autorig_vertical", 3, "A B C -> tries to auto-rig the selected vertices in vertical mode.");
         AddCommand("/autorig_horizontal", 3, "A B C -> tries to auto-rig the selected vertices in horizontal mode.");
@@ -72,6 +73,8 @@ public class ConsoleCommandBehaviour : MonoBehaviour {
 		AddCommand("/savegroupsasxfbin", 0, "-> saves each mesh group to a different .xfbin (experimental)");
 
 		AddCommand("/github", 0, "-> opens the GitHub of UNSME.");
+
+        AddCommand("/savexfbin", -1, "PATH -> saves the current model to an .xfbin");
 
 		int Pages = Commands.Count / 8;
 		if(Commands.Count % 8 > 0) Pages = Pages + 1;
@@ -103,7 +106,7 @@ public class ConsoleCommandBehaviour : MonoBehaviour {
 			// Get parameter number of the written command
 			int TempParameters = Command.Length - Command.Replace(" ", "").Length;
 
-			if(CmdParameters == TempParameters)
+			if(CmdParameters == TempParameters || (CmdParameters == -1 && CmdParameters != 0))
 			{
 				List<string> Par = new List<string>(Command.Split(' '));
 				if(Par.Count == TempParameters + 1)
@@ -147,6 +150,9 @@ public class ConsoleCommandBehaviour : MonoBehaviour {
 			case "/loadtexture":
 				Command_LoadTexture();
 			break;
+            case "/loadtexture:":
+                Command_LoadTexturePath(Params);
+            break;
 			case "/sensitivity":
 				Command_Sensitivity(Params);
 			break;
@@ -243,10 +249,35 @@ public class ConsoleCommandBehaviour : MonoBehaviour {
 			case "/github":
 				System.Diagnostics.Process.Start("https://github.com/zealottormunds/unsme");
 			break;
+            case "/savexfbin":
+                Command_SaveXfbin(Params);
+                break;
 		}
 	}
 
-	public void Command_Start()
+    public void Command_SaveXfbin(List<string> Param)
+    {
+        string path = "";
+        for(int x = 0; x < Param.Count; x++)
+        {
+            path = path + Param[x];
+            if (x < Param.Count - 1) path = path + " ";
+        }
+
+        DialogResult res = DialogResult.Yes;
+        if (R.groupCount > 1)
+        {
+            res = MessageBox.Show("This model has more than 1 group. Importing a brand new .obj is not recommended and the .xfbin might break. If you have exported this model with the tool and want to import it back after edition, then use /impobjpos. It will import all the vertex positions without changing the count.\n\nDo you want to import an .obj regardless?", "", MessageBoxButtons.YesNo);
+        }
+
+        if (res == DialogResult.Yes)
+        {
+            R.SaveModelToXfbin(path, true);
+            R.wasObjImported = true;
+        }
+    }
+
+    public void Command_Start()
 	{
 		R.ConsoleMessage("\n" + CommandDescription[0]);
 	}
@@ -316,6 +347,30 @@ public class ConsoleCommandBehaviour : MonoBehaviour {
 	{
 		R.LoadTexture();
 	}
+    
+    public void Command_LoadTexturePath(List<string> Param)
+    {
+        string path = "";
+        for (int x = 0; x < Param.Count; x++)
+        {
+            path = path + Param[x];
+            if (x < Param.Count - 1) path = path + " ";
+        }
+
+        if (System.IO.File.Exists(path))
+        {
+            DialogResult res = DialogResult.Yes;
+            if (res == DialogResult.Yes)
+            {
+                R.LoadTexture(path);
+            }
+        }
+        else
+        {
+            R.ConsoleMessage("\n<color=red>The file doesn't exist.</color>");
+        }
+
+    }
 
 	public void Command_Sensitivity(List<string> Params)
 	{
@@ -323,8 +378,8 @@ public class ConsoleCommandBehaviour : MonoBehaviour {
 
 		if(float.TryParse(Params[0], out X_))
 		{
-			R.SensitivityMouse = X_;
-			string CFG_Sensitivity = R.SensitivityMouse.ToString();
+			GetComponent<CameraMovement>().SensitivityMouse = X_;
+			string CFG_Sensitivity = GetComponent<CameraMovement>().SensitivityMouse.ToString();
 			R.ConsoleMessage("\n" + "<color=lime>Saved sensitivity settings.</color>");
 			System.IO.File.WriteAllText(UnityEngine.Application.dataPath + "\\cfg_sensitivity.cfg", CFG_Sensitivity);
 		}
@@ -513,9 +568,9 @@ public class ConsoleCommandBehaviour : MonoBehaviour {
 		DialogResult dial = DialogResult.OK;
 		for(int x = 0; x < GameObject.Find("Model Data").transform.childCount; x++)
 		{
-			if(R.vertexBone[x] == Vector3.zero || R.vertexWeight[x] == Vector3.zero)
+			if(R.vertexBone[x] == Vector4.zero || R.vertexWeight[x] == Vector4.zero)
 			{
-				dial = MessageBox.Show("Vertex " + x.ToString() + ", B(0, 0, 0), W(0, 0, 0).", "Bone information", MessageBoxButtons.OKCancel);
+				dial = MessageBox.Show("Vertex " + x.ToString() + ", B(0, 0, 0, 0), W(0, 0, 0, 0).", "Bone information", MessageBoxButtons.OKCancel);
 			}
 			if(dial == DialogResult.Cancel)
 			{
@@ -816,7 +871,7 @@ public class ConsoleCommandBehaviour : MonoBehaviour {
 			DialogResult res = DialogResult.Yes;
 			if(R.groupCount > 1)
 			{
-				res = MessageBox.Show("This model has more than 1 group. Importing a brand new .obj is not recommended and the .xfbin might break. If you have exported this model with the tool and want to import it back after edition, then use /impobjpos. It will import all the vertex positions without changing the count.\n\nDo you want to import an .obj regardless?", "", MessageBoxButtons.YesNo);
+				//res = MessageBox.Show("This model has more than 1 group. Importing a brand new .obj is not recommended and the .xfbin might break. If you have exported this model with the tool and want to import it back after edition, then use /impobjpos. It will import all the vertex positions without changing the count.\n\nDo you want to import an .obj regardless?", "", MessageBoxButtons.YesNo);
 			}
 
 			if(res == DialogResult.Yes)
@@ -832,9 +887,16 @@ public class ConsoleCommandBehaviour : MonoBehaviour {
 		}
 	}
 
-	public void Command_ImportObjPath(List<string> Params)
+	public void Command_ImportObjPath(List<string> Param)
 	{
-		if(System.IO.File.Exists(Params[0]))
+        string path = "";
+        for (int x = 0; x < Param.Count; x++)
+        {
+            path = path + Param[x];
+            if (x < Param.Count - 1) path = path + " ";
+        }
+
+        if (System.IO.File.Exists(path))
 		{
 			DialogResult res = DialogResult.Yes;
 			if(R.groupCount > 1)
@@ -844,7 +906,7 @@ public class ConsoleCommandBehaviour : MonoBehaviour {
 
 			if(res == DialogResult.Yes)
 			{
-				R.ImportModel(Params[0]);
+				R.ImportModelRE2(path);
 				R.wasObjImported = true;
 			}
 		}
@@ -900,9 +962,16 @@ public class ConsoleCommandBehaviour : MonoBehaviour {
 		}
 	}
 
-	public void Command_ExportObjPath(List<string> Params)
+	public void Command_ExportObjPath(List<string> Param)
 	{
-		R.ExportToObj(Params[0]);
+        string path = "";
+        for (int x = 0; x < Param.Count; x++)
+        {
+            path = path + Param[x];
+            if (x < Param.Count - 1) path = path + " ";
+        }
+
+        R.ExportToObj(path);
 	}
 
     static int SortByScore(GameObject y1, GameObject y2)
