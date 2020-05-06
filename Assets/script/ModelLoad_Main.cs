@@ -441,4 +441,69 @@ public class ModelLoad_Main : MonoBehaviour {
     }
 
     //==================================================================
+    public void OpenRE2Model(int stage)
+    {
+        try
+        {
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            openFileDialog1.ShowDialog();
+
+            if (openFileDialog1.FileName == "" || File.Exists(openFileDialog1.FileName) == false)
+            {
+                MessageBox.Show("Please select a valid file.");
+                return;
+            }
+
+            string ModelPath = openFileDialog1.FileName;
+            openFileDialog1 = new OpenFileDialog();
+            openFileDialog1.ShowDialog();
+
+            if (openFileDialog1.FileName == "" || File.Exists(openFileDialog1.FileName) == false)
+            {
+                MessageBox.Show("Please select a valid file.");
+                return;
+            }
+
+            string LengthPath = openFileDialog1.FileName;
+            openFileDialog1 = new OpenFileDialog();
+            openFileDialog1.ShowDialog();
+
+            if (openFileDialog1.FileName == "" || File.Exists(openFileDialog1.FileName) == false)
+            {
+                MessageBox.Show("Please select a valid file.");
+                //return;
+            }
+
+            string TrianglePath = openFileDialog1.FileName;
+
+            int VertexLength = int.Parse(File.ReadAllText(LengthPath));
+            byte[] vertexBytes = File.ReadAllBytes(ModelPath);
+            byte[] triangleBytes = new byte[0];
+            byte[] textureCoordBytes = new byte[0];
+
+            if (TrianglePath != "") triangleBytes = File.ReadAllBytes(TrianglePath);
+
+            /*if(File.Exists(folderBrowserDialog1.SelectedPath + "\\modelTriangles.unsmf") == true)
+            {
+                textureCoordBytes = File.ReadAllBytes(folderBrowserDialog1.SelectedPath + "\\modelTextureCoords.unsmf");
+            }*/
+
+            if (stage == 1)
+            {
+                stageMode = true;
+            }
+
+            DialogResult Mode_ = MessageBox.Show("Set mode to \'CUSTOM\'?", "", MessageBoxButtons.YesNo);
+
+            if (Mode_ == DialogResult.No) GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().OpenRE2(VertexLength, triangleBytes, textureCoordBytes, vertexBytes, stageMode, 0);
+            else GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().OpenRE2(VertexLength, triangleBytes, textureCoordBytes, vertexBytes, stageMode, 20);
+
+            Destroy(GameObject.Find("Welcome Screen"));
+        }
+        catch (Exception e)
+        {
+            stageMode = false;
+            UnityEngine.Debug.Log(e.Message);
+        }
+    }
 }

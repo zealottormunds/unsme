@@ -60,8 +60,8 @@ public class SaveEachGroup : MonoBehaviour {
 			List<int> meshTriangles = new List<int>();
 			List<Vector3> meshNormals = rf.meshNormals;
 			List<Vector2> meshUVs = rf.mf.mesh.uv.ToList();
-			List<Vector4> vertexWeight = rf.vertexWeight.ToList();
-			List<Vector4> vertexBone = rf.vertexBone.ToList();
+			List<Vector3> vertexWeight = rf.vertexWeight.ToList();
+			List<Vector3> vertexBone = rf.vertexBone.ToList();
 
 			int VertexCount = 0;
 			GroupSelection gp = GetComponent<GroupSelection>();
@@ -138,7 +138,6 @@ public class SaveEachGroup : MonoBehaviour {
 					vertexFileNew[0x23 + (rf.byteLength * x)] = (byte)vertexBone[x].x;
 					vertexFileNew[0x27 + (rf.byteLength * x)] = (byte)vertexBone[x].y;
 					vertexFileNew[0x2B + (rf.byteLength * x)] = (byte)vertexBone[x].z;
-                    vertexFileNew[0x2F + (rf.byteLength * x)] = (byte)vertexBone[x].w;
 
 					// WEIGHT DATA
 					byte[] weightx = BitConverter.GetBytes(vertexWeight[x].x).ToArray();
@@ -165,16 +164,8 @@ public class SaveEachGroup : MonoBehaviour {
 					vertexFileNew[0x3A + (rf.byteLength * x)] = weightz[2];
 					vertexFileNew[0x3B + (rf.byteLength * x)] = weightz[3];
 
-                    byte[] weightw = BitConverter.GetBytes(vertexWeight[x].w).ToArray();
-                    Array.Reverse(weightw);
-
-                    vertexFileNew[0x3C + (rf.byteLength * x)] = weightw[0];
-                    vertexFileNew[0x3D + (rf.byteLength * x)] = weightw[1];
-                    vertexFileNew[0x3E + (rf.byteLength * x)] = weightw[2];
-                    vertexFileNew[0x3F + (rf.byteLength * x)] = weightw[3];
-
-                    // NORMALS
-                    byte[] normalx = BitConverter.GetBytes(meshNormals[x].x).ToArray();
+					// NORMALS
+					byte[] normalx = BitConverter.GetBytes(meshNormals[x].x).ToArray();
 					Array.Reverse(normalx);
 
 					vertexFileNew[0x10 + (rf.byteLength * x)] = normalx[0];

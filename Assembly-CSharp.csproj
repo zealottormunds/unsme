@@ -81,26 +81,20 @@
      <Compile Include="Assets\WireframeRenderer\Script\StaticWireframeRenderer.cs" />
      <None Include="Assets\unsmf\Vertex\Documentation for vertex lenght.txt" />
      <None Include="Assets\Resources\bones.txt" />
- <Reference Include="Unity.Timeline.Editor">
- <HintPath>C:/Users/santi/Documentos/GitHub/unsme/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
+ <Reference Include="UnityEngine.Monetization">
+ <HintPath>C:/Users/santi/Documentos/GitHub/unsme/Library/ScriptAssemblies/UnityEngine.Monetization.dll</HintPath>
  </Reference>
  <Reference Include="com.unity.multiplayer-hlapi.Editor">
  <HintPath>C:/Users/santi/Documentos/GitHub/unsme/Library/ScriptAssemblies/com.unity.multiplayer-hlapi.Editor.dll</HintPath>
  </Reference>
- <Reference Include="Unity.VSCode.Editor">
- <HintPath>C:/Users/santi/Documentos/GitHub/unsme/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
+ <Reference Include="UnityEngine.Advertisements">
+ <HintPath>C:/Users/santi/Documentos/GitHub/unsme/Library/ScriptAssemblies/UnityEngine.Advertisements.dll</HintPath>
  </Reference>
  <Reference Include="Unity.TextMeshPro.Editor">
  <HintPath>C:/Users/santi/Documentos/GitHub/unsme/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Users/santi/Documentos/GitHub/unsme/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
- </Reference>
- <Reference Include="Unity.Timeline">
- <HintPath>C:/Users/santi/Documentos/GitHub/unsme/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
- </Reference>
- <Reference Include="Unity.CollabProxy.Editor">
- <HintPath>C:/Users/santi/Documentos/GitHub/unsme/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
  </Reference>
  <Reference Include="com.unity.multiplayer-weaver.Editor">
  <HintPath>C:/Users/santi/Documentos/GitHub/unsme/Library/ScriptAssemblies/com.unity.multiplayer-weaver.Editor.dll</HintPath>
@@ -324,20 +318,14 @@
  <Reference Include="System.Windows.Forms">
  <HintPath>C:/Users/santi/Documentos/GitHub/unsme/Assets/plugins/System.Windows.Forms.dll</HintPath>
  </Reference>
- <Reference Include="UnityEngine.Advertisements">
- <HintPath>C:/Users/santi/Documentos/GitHub/unsme/Library/PackageCache/com.unity.ads@2.3.1/Runtime/UnityEngine.Advertisements.dll</HintPath>
- </Reference>
- <Reference Include="UnityEngine.Advertisements.Editor">
- <HintPath>C:/Users/santi/Documentos/GitHub/unsme/Library/PackageCache/com.unity.ads@2.3.1/Runtime/UnityEngine.Advertisements.Editor.dll</HintPath>
- </Reference>
  <Reference Include="Unity.Analytics.Editor">
- <HintPath>C:/Users/santi/Documentos/GitHub/unsme/Library/PackageCache/com.unity.analytics@3.3.2/Unity.Analytics.Editor.dll</HintPath>
- </Reference>
- <Reference Include="Unity.Analytics.StandardEvents">
- <HintPath>C:/Users/santi/Documentos/GitHub/unsme/Library/PackageCache/com.unity.analytics@3.3.2/Unity.Analytics.StandardEvents.dll</HintPath>
+ <HintPath>C:/Users/santi/Documentos/GitHub/unsme/Library/PackageCache/com.unity.analytics@3.3.5/Unity.Analytics.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Analytics.Tracker">
- <HintPath>C:/Users/santi/Documentos/GitHub/unsme/Library/PackageCache/com.unity.analytics@3.3.2/Unity.Analytics.Tracker.dll</HintPath>
+ <HintPath>C:/Users/santi/Documentos/GitHub/unsme/Library/PackageCache/com.unity.analytics@3.3.5/Unity.Analytics.Tracker.dll</HintPath>
+ </Reference>
+ <Reference Include="Unity.Analytics.StandardEvents">
+ <HintPath>C:/Users/santi/Documentos/GitHub/unsme/Library/PackageCache/com.unity.analytics@3.3.5/AnalyticsStandardEvents/Unity.Analytics.StandardEvents.dll</HintPath>
  </Reference>
  <Reference Include="mscorlib">
  <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>
