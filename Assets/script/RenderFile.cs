@@ -2129,15 +2129,15 @@ public class RenderFile : MonoBehaviour {
 
 	public void LoadTexture(string p = "")
 	{
-		OpenFileDialog openFileDialog1 = new OpenFileDialog();
+		/*OpenFileDialog openFileDialog1 = new OpenFileDialog();
         if (p == "") openFileDialog1.ShowDialog();
-        else openFileDialog1.FileName = p;
+        else openFileDialog1.FileName = p;*/
 
-		if(openFileDialog1.FileName != "" && File.Exists(openFileDialog1.FileName))
+		if(p != "" && File.Exists(p))
 		{
 			try
 			{
-				byte[] textureBytes = File.ReadAllBytes(openFileDialog1.FileName);
+				byte[] textureBytes = File.ReadAllBytes(p);
 				Texture2D extTexture = new Texture2D(1024, 1024);
 				extTexture.LoadImage(textureBytes);
 				RenderedMesh.GetComponent<RenderMaterial>().Materials_[0].mainTexture = extTexture;

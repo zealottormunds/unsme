@@ -52,7 +52,6 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.Text
     - UnityEngine.UI.Toggle
     com.unity.multiplayer-hlapi.Runtime.dll:
-    - UnityEngine.Networking.NetworkCallbacks
     - UnityEngine.Networking.NetworkIdentity
   sceneClasses:
     Assets/modelViewer.unity:
@@ -826,4 +825,4 @@ ScriptsOnlyBuild:
   platform: 5
   scenePathNames:
   - Assets/modelViewer.unity
-  playerPath: C:/Users/santi/Documentos/GitHub/unsme_build/x64/UNS Model Editor.exe
+  playerPath: C:/Users/santi/Documentos/GitHub/unsme_build/x32/UNS Model Editor.exe
