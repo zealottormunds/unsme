@@ -6,6 +6,13 @@ Latest release in: github.com/zealottormunds/unsme/releases
 
 If you're a JoJo modder, I really recommend checking SutandoTsukai181's branch of UNSME: https://github.com/SutandoTsukai181/unsme
 
+
+# Changelog 1.9e:
+- Fixed file explorer
+- Fixed weight editor (again but for real this time!)
+- Fixed names getting deleted in new models
+- Fixed crashes when saving certain models
+
 # Changelog 1.9b
 - Fixed /loadtexture: PATH
 
