@@ -6,6 +6,12 @@ Latest release in: github.com/zealottormunds/unsme/releases
 
 If you're a JoJo modder, I really recommend checking SutandoTsukai181's branch of UNSME: https://github.com/SutandoTsukai181/unsme
 
+# Changelog 1.95a:
+* Improved the selection sphere (performance & functionality)
+* Added command /exportbones to export all bones to a .txt file.
+* Added command /setvertexscale to set the scale of vertices on screen.
+* Fixed vertex selection issues
+* Fixed perspective of the ortographic camera mode
 
 # Changelog 1.9e:
 - Fixed file explorer
