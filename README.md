@@ -6,6 +6,21 @@ Latest release in: github.com/zealottormunds/unsme/releases
 
 If you're a JoJo modder, I really recommend checking SutandoTsukai181's branch of UNSME: https://github.com/SutandoTsukai181/unsme
 
+
+# Changelog 1.9e:
+- Fixed file explorer
+- Fixed weight editor (again but for real this time!)
+- Fixed names getting deleted in new models
+- Fixed crashes when saving certain models
+
+# Changelog 1.9b
+- Fixed /loadtexture: PATH
+
+# Changelog 1.9a:
+- Model importing is now fixed. Models should no longer be invisible.
+- If you're using blender, mark "triangulate faces" when exporting the obj file.
+- Fixed shadows when saving the xfbin.
+
 # Changelog 1.8a:
 - Added the auto-rigger. If your new model's proportions are similar to the game model you're basing off, you can use this to rig your models automatically.
 - Fixing 6C and 80 now works for multi-grouped meshes, which means you can import .objs on normal models (like 2itcbod1, 2orcbod1, etcetera, as long as your .obj has the same amount of groups as the original mesh.)
