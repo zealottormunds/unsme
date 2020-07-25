@@ -30,9 +30,10 @@ public class w_VertexBoneEditor : MonoBehaviour {
 	{
 		if(Bone0Input.text != "")
 		{
-			foreach(GameObject vertexSelected in GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().selectedVertex)
+            int b = int.Parse(Bone0Input.text);
+            foreach (GameObject vertexSelected in GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().selectedVertex)
 			{
-				GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().ChangeBoneID(int.Parse(vertexSelected.name), 0, int.Parse(Bone0Input.text));
+				GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().ChangeBoneID(int.Parse(vertexSelected.name), 0, b);
 			}
 		}
 		else
@@ -45,9 +46,10 @@ public class w_VertexBoneEditor : MonoBehaviour {
 	{
 		if(Bone1Input.text != "")
 		{
-			foreach(GameObject vertexSelected in GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().selectedVertex)
+            int b = int.Parse(Bone1Input.text);
+            foreach (GameObject vertexSelected in GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().selectedVertex)
 			{
-				GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().ChangeBoneID(int.Parse(vertexSelected.name), 1, int.Parse(Bone1Input.text));
+				GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().ChangeBoneID(int.Parse(vertexSelected.name), 1, b);
 			}
 		}
 		else
@@ -60,9 +62,10 @@ public class w_VertexBoneEditor : MonoBehaviour {
 	{
 		if(Bone2Input.text != "")
 		{
-			foreach(GameObject vertexSelected in GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().selectedVertex)
+            int b = int.Parse(Bone2Input.text);
+            foreach (GameObject vertexSelected in GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().selectedVertex)
 			{
-				GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().ChangeBoneID(int.Parse(vertexSelected.name), 2, int.Parse(Bone2Input.text));
+				GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().ChangeBoneID(int.Parse(vertexSelected.name), 2, b);
 			}
 		}
 		else
@@ -75,9 +78,10 @@ public class w_VertexBoneEditor : MonoBehaviour {
     {
         if (Bone3Input.text != "")
         {
+            int b = int.Parse(Bone3Input.text);
             foreach (GameObject vertexSelected in GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().selectedVertex)
             {
-                GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().ChangeBoneID(int.Parse(vertexSelected.name), 3, int.Parse(Bone3Input.text));
+                GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().ChangeBoneID(int.Parse(vertexSelected.name), 3, b);
             }
         }
         else
@@ -90,9 +94,10 @@ public class w_VertexBoneEditor : MonoBehaviour {
 	{
 		if(Weight0Input.text != "")
 		{
-			foreach(GameObject vertexSelected in GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().selectedVertex)
+            float w = float.Parse(Weight0Input.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture);
+            foreach (GameObject vertexSelected in GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().selectedVertex)
 			{
-				GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().ChangeWeight(int.Parse(vertexSelected.name), 0, float.Parse(Weight0Input.text));
+				GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().ChangeWeight(int.Parse(vertexSelected.name), 0, w);
 			}
 		}
 		else
@@ -105,9 +110,10 @@ public class w_VertexBoneEditor : MonoBehaviour {
 	{
 		if(Weight1Input.text != "")
 		{
+            float w = float.Parse(Weight1Input.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture);
 			foreach(GameObject vertexSelected in GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().selectedVertex)
 			{
-				GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().ChangeWeight(int.Parse(vertexSelected.name), 1, float.Parse(Weight1Input.text));
+				GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().ChangeWeight(int.Parse(vertexSelected.name), 1, w);
 			}
 		}
 		else
@@ -120,9 +126,10 @@ public class w_VertexBoneEditor : MonoBehaviour {
 	{
 		if(Weight2Input.text != "")
 		{
-			foreach(GameObject vertexSelected in GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().selectedVertex)
+            float w = float.Parse(Weight2Input.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture);
+            foreach (GameObject vertexSelected in GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().selectedVertex)
 			{
-				GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().ChangeWeight(int.Parse(vertexSelected.name), 2, float.Parse(Weight2Input.text));
+				GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().ChangeWeight(int.Parse(vertexSelected.name), 2, w);
 			}
 		}
 		else
@@ -135,9 +142,10 @@ public class w_VertexBoneEditor : MonoBehaviour {
     {
         if (Weight3Input.text != "")
         {
+            float w = float.Parse(Weight3Input.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture);
             foreach (GameObject vertexSelected in GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().selectedVertex)
             {
-                GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().ChangeWeight(int.Parse(vertexSelected.name), 3, float.Parse(Weight3Input.text));
+                GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().ChangeWeight(int.Parse(vertexSelected.name), 3, w);
             }
         }
         else

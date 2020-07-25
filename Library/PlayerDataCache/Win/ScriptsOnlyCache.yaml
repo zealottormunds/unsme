@@ -52,6 +52,7 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.Text
     - UnityEngine.UI.Toggle
     com.unity.multiplayer-hlapi.Runtime.dll:
+    - UnityEngine.Networking.NetworkCallbacks
     - UnityEngine.Networking.NetworkIdentity
   sceneClasses:
     Assets/modelViewer.unity:
@@ -88,83 +89,83 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 9736}
+      Script: {instanceID: 9734}
     - Class: 114
-      Script: {instanceID: 9770}
+      Script: {instanceID: 9768}
     - Class: 114
-      Script: {instanceID: 9818}
+      Script: {instanceID: 9816}
+    - Class: 114
+      Script: {instanceID: 9858}
     - Class: 114
       Script: {instanceID: 9860}
     - Class: 114
-      Script: {instanceID: 9862}
+      Script: {instanceID: 9886}
     - Class: 114
-      Script: {instanceID: 9888}
+      Script: {instanceID: 9914}
     - Class: 114
-      Script: {instanceID: 9916}
+      Script: {instanceID: 9918}
     - Class: 114
-      Script: {instanceID: 9920}
+      Script: {instanceID: 9926}
     - Class: 114
-      Script: {instanceID: 9928}
+      Script: {instanceID: 9944}
     - Class: 114
-      Script: {instanceID: 9946}
+      Script: {instanceID: 9950}
     - Class: 114
-      Script: {instanceID: 9952}
+      Script: {instanceID: 9992}
     - Class: 114
-      Script: {instanceID: 9994}
+      Script: {instanceID: 10004}
     - Class: 114
-      Script: {instanceID: 10006}
+      Script: {instanceID: 10116}
     - Class: 114
-      Script: {instanceID: 10118}
+      Script: {instanceID: 10180}
     - Class: 114
-      Script: {instanceID: 10182}
+      Script: {instanceID: 10186}
     - Class: 114
-      Script: {instanceID: 10188}
+      Script: {instanceID: 10246}
     - Class: 114
-      Script: {instanceID: 10248}
+      Script: {instanceID: 10284}
     - Class: 114
-      Script: {instanceID: 10286}
+      Script: {instanceID: 10300}
     - Class: 114
-      Script: {instanceID: 10302}
+      Script: {instanceID: 10360}
     - Class: 114
-      Script: {instanceID: 10362}
+      Script: {instanceID: 10410}
     - Class: 114
-      Script: {instanceID: 10412}
+      Script: {instanceID: 10600}
     - Class: 114
-      Script: {instanceID: 10602}
+      Script: {instanceID: 10690}
     - Class: 114
       Script: {instanceID: 10692}
     - Class: 114
-      Script: {instanceID: 10694}
+      Script: {instanceID: 10760}
     - Class: 114
-      Script: {instanceID: 10764}
+      Script: {instanceID: 10836}
     - Class: 114
-      Script: {instanceID: 10840}
+      Script: {instanceID: 10946}
     - Class: 114
-      Script: {instanceID: 10950}
+      Script: {instanceID: 11010}
     - Class: 114
-      Script: {instanceID: 11014}
+      Script: {instanceID: 11028}
     - Class: 114
-      Script: {instanceID: 11032}
+      Script: {instanceID: 11128}
     - Class: 114
-      Script: {instanceID: 11132}
+      Script: {instanceID: 11278}
     - Class: 114
-      Script: {instanceID: 11282}
+      Script: {instanceID: 11456}
     - Class: 114
-      Script: {instanceID: 11460}
+      Script: {instanceID: 11492}
     - Class: 114
-      Script: {instanceID: 11496}
+      Script: {instanceID: 11572}
     - Class: 114
       Script: {instanceID: 11576}
     - Class: 114
-      Script: {instanceID: 11580}
+      Script: {instanceID: 11634}
     - Class: 114
       Script: {instanceID: 11638}
     - Class: 114
-      Script: {instanceID: 11642}
+      Script: {instanceID: 11654}
     - Class: 114
-      Script: {instanceID: 11658}
-    - Class: 114
-      Script: {instanceID: 11676}
+      Script: {instanceID: 11672}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 124
@@ -212,7 +213,7 @@ ScriptsOnlyBuild:
     className: BannerPlaceholder
   - hash:
       serializedVersion: 2
-      Hash: 054d6cdae7371b629fef06167948d2b1
+      Hash: 51514dc79861aa953636900d48c66eb7
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: CameraMovement
@@ -506,7 +507,7 @@ ScriptsOnlyBuild:
     className: NetworkManager
   - hash:
       serializedVersion: 2
-      Hash: f5fc68e73c470b8ed8455dd4e1cb8c21
+      Hash: b472a400dbb8946c0e0a0688e67711c3
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: RenderFile
@@ -542,7 +543,7 @@ ScriptsOnlyBuild:
     className: TextContainer
   - hash:
       serializedVersion: 2
-      Hash: 745dedbf1699f5ce126cd569f7a7bfcf
+      Hash: 0ca16b65cb894abd629d169c930f2f5d
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: VertexObject
@@ -825,4 +826,4 @@ ScriptsOnlyBuild:
   platform: 5
   scenePathNames:
   - Assets/modelViewer.unity
-  playerPath: C:/Users/santi/Documentos/GitHub/unsme_build/x32/UNS Model Editor.exe
+  playerPath: C:/Users/santi/Documentos/GitHub/unsme_build/UNS Model Editor.exe

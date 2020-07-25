@@ -41,17 +41,29 @@ public class ModelLoad_Main : MonoBehaviour {
         //MessageBox.Show("test");
 
         /*SaveFileDialog d = new SaveFileDialog();
-        d.ShowDialog();
+        d.ShowDialog();*/
 
 		// NOW OPEN FILE
 		OpenFileDialog openFileDialog1 = new OpenFileDialog();
 		//openFileDialog1.DefaultExt = "xfbin";
 		//openFileDialog1.AddExtension = true;
-		openFileDialog1.ShowDialog();*/
+		openFileDialog1.ShowDialog();
 
-        string pathToXfbin = Path.text;
+        string pathToXfbin = openFileDialog1.FileName;
+        //string pathToXfbin = Path.text.Replace("\\", "\\\\");
 
-		if(pathToXfbin != "" && File.Exists(pathToXfbin))
+        if (pathToXfbin == "")
+        {
+            MessageBox.Show("Please input a path.");
+            return;
+        }
+        if (File.Exists(pathToXfbin) == false)
+        {
+            MessageBox.Show("The file doesn't exist. Check that the path is correct.");
+            return;
+        }
+
+        if (pathToXfbin != "" && File.Exists(pathToXfbin))
 		{
 			byte[] file = File.ReadAllBytes(pathToXfbin);
 
@@ -290,14 +302,39 @@ public class ModelLoad_Main : MonoBehaviour {
 					meshBytes[27];
 			}
 
+            int TotalTriangleSize = SizeTriangles;
+
+            // GET CORRECT TRIANGLE SIZE
+            if(GroupCount_ == 1)
+            {
+                SizeTriangles = ((meshBytes[0x80] * 0x100) + (meshBytes[0x81] * 0x1)) * 2;
+                if (SizeTriangles < TotalTriangleSize) SizeTriangles = SizeTriangles + 2;
+                //MessageBox.Show("Tiangles: " + SizeTriangles.ToString("X2"));
+            }
+            else
+            {
+                SizeTriangles = 0;
+                for(int x = 0; x < GroupCount_; x++)
+                {
+                    //MessageBox.Show("Added group");
+                    SizeTriangles = SizeTriangles + 
+                        (((meshBytes[0x80 + (x * 0x30)] * 0x100) + (meshBytes[0x81 + (x * 0x30)])) * 2);
+                }
+
+                if (SizeTriangles < TotalTriangleSize) SizeTriangles = SizeTriangles + 2;
+                //MessageBox.Show("Tiangles: " + SizeTriangles.ToString("X2"));
+            }
+
 			// GENERATE TRIANGLE FILE
 			for(int x = 0; x < SizeTriangles; x++)
 			{
 				triangleBytes.Add(meshBytes[SizeHeader + SizeFirst + x]);
 			}
 
-			// CHECK VERTEX LENGTH
-			if(VertexLength == 0x40)
+            SizeTriangles = TotalTriangleSize;
+
+            // CHECK VERTEX LENGTH
+            if (VertexLength == 0x40)
 			{
 				// GENERATE TEXTURE COORDS FILE
 				for(int x = 0; x < SizeTextureCoords; x++)
@@ -331,7 +368,7 @@ public class ModelLoad_Main : MonoBehaviour {
 				GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().stageMode = true;
 			}
 			int a_ = indexOfMeshes[SelectedIndex];
-			GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().OpenModelFromXfbin(VertexLength, fileBytes.ToArray(), meshBytes.ToArray(), a_, triangleBytes.ToArray(), textureBytes.ToArray(), vertexBytes.ToArray(), GroupCount_, BoneList);
+			GameObject.Find("MODEL VIEWER").GetComponent<RenderFile>().OpenModelFromXfbin(VertexLength, fileBytes.ToArray(), meshBytes.ToArray(), a_, triangleBytes.ToArray(), textureBytes.ToArray(), vertexBytes.ToArray(), GroupCount_, BoneList, TotalTriangleSize);
 			Destroy(GameObject.Find("Welcome Screen"));
 		}
 		else

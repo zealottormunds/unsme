@@ -64,17 +64,15 @@ public class ConsoleCommandBehaviour : MonoBehaviour {
 		AddCommand("/exportobj", 0, "-> exports an .obj file of the actual model.");
 		AddCommand("/exportobj:", -1, "PATH -> exports an .obj file of the actual model in the desired PATH.");
 
-        AddCommand("/autorig_vertical", 3, "A B C -> tries to auto-rig the selected vertices in vertical mode.");
-        AddCommand("/autorig_horizontal", 3, "A B C -> tries to auto-rig the selected vertices in horizontal mode.");
+        AddCommand("/exportbones", 0, "exports the bones of this model to an external file.");
 
 		AddCommand("/saveraw", 0, "-> exports the model as a raw file.");
 
 		// Extra commands:
 		AddCommand("/savegroupsasxfbin", 0, "-> saves each mesh group to a different .xfbin (experimental)");
-
 		AddCommand("/github", 0, "-> opens the GitHub of UNSME.");
-
         AddCommand("/savexfbin", -1, "PATH -> saves the current model to an .xfbin");
+        AddCommand("/setvertexsize", 1, "SCALE -> sets the scale of the vertices on screen (Example: setvertexsize 0.2 is the default)");
 
 		int Pages = Commands.Count / 8;
 		if(Commands.Count % 8 > 0) Pages = Pages + 1;
@@ -106,7 +104,7 @@ public class ConsoleCommandBehaviour : MonoBehaviour {
 			// Get parameter number of the written command
 			int TempParameters = Command.Length - Command.Replace(" ", "").Length;
 
-			if(CmdParameters == TempParameters || (CmdParameters == -1 && CmdParameters != 0))
+			if((CmdParameters == TempParameters || (CmdParameters == -1 && CmdParameters != 0)))
 			{
 				List<string> Par = new List<string>(Command.Split(' '));
 				if(Par.Count == TempParameters + 1)
@@ -234,11 +232,8 @@ public class ConsoleCommandBehaviour : MonoBehaviour {
 			case "/exportobj:":
 				Command_ExportObjPath(Params);
 			break;
-            case "/autorig_vertical":
-                //Command_AutorigVertical(Params);
-            break;
-            case "/autorig_horizontal":
-                //Command_AutorigHorizontal(Params);
+            case "/exportbones":
+                Command_ExportBones();
             break;
             case "/saveraw":
 				Command_SaveRaw();
@@ -252,7 +247,10 @@ public class ConsoleCommandBehaviour : MonoBehaviour {
             case "/savexfbin":
                 Command_SaveXfbin(Params);
                 break;
-		}
+            case "/setvertexsize":
+                Command_SetVertexSize(Params);
+                break;
+        }
 	}
 
     public void Command_SaveXfbin(List<string> Param)
@@ -267,12 +265,12 @@ public class ConsoleCommandBehaviour : MonoBehaviour {
         DialogResult res = DialogResult.Yes;
         if (R.groupCount > 1)
         {
-            res = MessageBox.Show("This model has more than 1 group. Importing a brand new .obj is not recommended and the .xfbin might break. If you have exported this model with the tool and want to import it back after edition, then use /impobjpos. It will import all the vertex positions without changing the count.\n\nDo you want to import an .obj regardless?", "", MessageBoxButtons.YesNo);
+            //res = MessageBox.Show("This model has more than 1 group. Importing a brand new .obj is not recommended and the .xfbin might break. If you have exported this model with the tool and want to import it back after edition, then use /impobjpos. It will import all the vertex positions without changing the count.\n\nDo you want to import an .obj regardless?", "", MessageBoxButtons.YesNo);
         }
 
         if (res == DialogResult.Yes)
         {
-            R.SaveModelToXfbin(path, true);
+            R.SaveModelToXfbin(path);
             R.wasObjImported = true;
         }
     }
@@ -901,7 +899,7 @@ public class ConsoleCommandBehaviour : MonoBehaviour {
 			DialogResult res = DialogResult.Yes;
 			if(R.groupCount > 1)
 			{
-				res = MessageBox.Show("This model has more than 1 group. Importing a brand new .obj is not recommended and the .xfbin might break. If you have exported this model with the tool and want to import it back after edition, then use /impobjpos. It will import all the vertex positions without changing the count.\n\nDo you want to import an .obj regardless?", "", MessageBoxButtons.YesNo);
+				res = MessageBox.Show("This xfbin mesh has " + R.groupsInXfbin.ToString() + " groups. Your obj MUST contain the same number of groups for it to save correctly. If your .obj has less groups, add a simple cube in your mesh. Otherwise, merge groups until the numbers are the same.", "", MessageBoxButtons.YesNo);
 			}
 
 			if(res == DialogResult.Yes)
@@ -974,23 +972,39 @@ public class ConsoleCommandBehaviour : MonoBehaviour {
         R.ExportToObj(path);
 	}
 
+    public void Command_ExportBones()
+    {
+        if (R.byteLength != 64)
+        {
+            R.ConsoleMessage("\nThis model does not have bones.");
+            return;
+        }
+
+        string boneFile = "X Y Z // BONE X Y Z W // WEIGHT X Y Z W";
+
+        for(int x = 0; x < R.meshVertices.Count; x++)
+        {
+            Vector3 p = R.meshVertices[x];
+            Vector4 b = R.vertexBone[x];
+            Vector4 w = R.vertexWeight[x];
+            boneFile = boneFile + (p.x * -1).ToString().Replace(',', '.') + " " + p.y.ToString().Replace(',', '.') + " " + p.z.ToString().Replace(',', '.') +
+                ((int)b.x).ToString() + " " + ((int)b.y).ToString() + " " + ((int)b.z).ToString() + " " + ((int)b.w) +
+                w.x.ToString().Replace(',', '.') + " " + w.y.ToString().Replace(',', '.') + " " + w.z.ToString().Replace(',', '.') + " " + w.w.ToString().Replace(',', '.') + "\n";
+        }
+
+        SaveFileDialog s = new SaveFileDialog();
+        s.ShowDialog();
+
+        if (s.FileName != "")
+        {
+            File.WriteAllText(s.FileName, boneFile);
+            R.ConsoleMessage("\nBone list exported to " + s.FileName);
+        }
+    }
+
     static int SortByScore(GameObject y1, GameObject y2)
     {
         return y1.transform.position.y.CompareTo(y2.transform.position.y);
-    }
-
-    public void Command_AutorigVertical(List <string> Params)
-    {
-        List<GameObject> VerticesToRig = R.selectedVertex;
-        VerticesToRig.Sort(SortByScore);
-
-        float MinimumY = VerticesToRig[0].transform.position.y;
-        float MaximumY = VerticesToRig[VerticesToRig.Count - 1].transform.position.y;
-    }
-
-    public void Command_AutorigHorizontal(List<string> Params)
-    {
-
     }
 
     public void Command_SaveRaw()
@@ -1009,4 +1023,16 @@ public class ConsoleCommandBehaviour : MonoBehaviour {
 		GetComponent<SaveEachGroup>().dial = dial;
 		GetComponent<SaveEachGroup>().SaveEach();
 	}
+
+    public void Command_SetVertexSize(List <string> Params)
+    {
+        float scale = float.Parse(Params[0].Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture);
+
+        GameObject modelData = GameObject.Find("Model Data");
+
+        for(int x = 0; x < modelData.transform.childCount; x++)
+        {
+            modelData.transform.GetChild(x).transform.localScale = Vector3.one * scale;
+        }
+    }
 }

@@ -29,6 +29,8 @@ public class RenderFile : MonoBehaviour {
 	private bool FinishedDrawingModel = false;
 	[HideInInspector]
 	public int WeightMode = 0;
+    [HideInInspector]
+    public int OriginalTriangleSectionSize = 0;
 	// 0 for normal, 1 for YZ swapped
 
 	private int InitialVertexCount = 0;
@@ -55,6 +57,9 @@ public class RenderFile : MonoBehaviour {
 	public List<Vector4> vertexBone = new List<Vector4>();
 	[HideInInspector]
 	public List<Vector4> vertexWeight = new List<Vector4>();
+
+    [HideInInspector]
+    public List<int> trisGroup = new List<int>();
 
 	[HideInInspector]
 	public string PathToModel;
@@ -114,12 +119,13 @@ public class RenderFile : MonoBehaviour {
 		mf.mesh.MarkDynamic();
     }
 
-    public void OpenModelFromXfbin(int VertexLength_, byte[] XfbinBytes, byte[] NDP3Bytes, int NDP3Index_, byte[] TriangleFile, byte[] TextureFile, byte[] VertexFile, int groupCount_, List<string> BoneList)
+    public void OpenModelFromXfbin(int VertexLength_, byte[] XfbinBytes, byte[] NDP3Bytes, int NDP3Index_, byte[] TriangleFile, byte[] TextureFile, byte[] VertexFile, int groupCount_, List<string> BoneList, int triSize)
     {
     	try
     	{
             if (fileOpen == false)
             {
+                OriginalTriangleSectionSize = triSize;
                 OriginalXfbin = XfbinBytes;
                 OriginalNDP3 = NDP3Bytes;
                 NDP3Index = NDP3Index_;
@@ -140,6 +146,8 @@ public class RenderFile : MonoBehaviour {
                 meshNormals.Clear();
                 TextureUVs.Clear();
                 vertexWeight.Clear();
+
+                trisGroup.Clear();
 
                 fileBytes = VertexFile;
                 triangleFile = TriangleFile;
@@ -253,7 +261,7 @@ public class RenderFile : MonoBehaviour {
 					meshVertices.Add(vertexPosition[x]);
 
 					actualObject.AddComponent<VertexObject>();
-					actualObject.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+					actualObject.transform.localScale = new Vector3(0.35f, 0.35f, 0.35f);
 					actualObject.transform.position = vertexPosition[x];
 					actualObject.name = x.ToString();
 					actualObject.transform.SetParent(GameObject.Find("Model Data").transform);
@@ -281,9 +289,11 @@ public class RenderFile : MonoBehaviour {
 
 				if(triangleFile.Length > 1)
 				{
-					if(groupsInXfbin == 1)
+					if(groupsInXfbin == -1)
 					{
-						int[] num = new int[3];
+                        //g.TrianglesPerGroup
+
+                        int[] num = new int[3];
 						int a = 0;
 						int q = 0;
 
@@ -346,14 +356,18 @@ public class RenderFile : MonoBehaviour {
 					else
 					{
                         List<int> VerticesPerGroup = new List<int>();
-						List<int> TrianglesPerGroup = new List<int>();
+						List<int> GroupTris = new List<int>();
+                        int groupTrisTotal = 0;
 						for(int x = 0; x < groupsInXfbin; x++)
 						{
 							int vertices_ = NDP3Bytes[0x6C + (0x30 * x)] * 0x100 + NDP3Bytes[0x6D + (0x30 * x)];
 							VerticesPerGroup.Add(vertices_);
 
 							int triangles_ = NDP3Bytes[0x80 + (0x30 * x)] * 0x100 + NDP3Bytes[0x81 + (0x30 * x)];
-							TrianglesPerGroup.Add(triangles_ * 2);
+                            GroupTris.Add((triangles_ * 2));
+                            groupTrisTotal += triangles_ * 2;
+
+                            if (x == groupsInXfbin - 1 && groupTrisTotal + 2 <= triangleFile.Length) GroupTris[x] += 2;
 						}
 
                         int totalVertsOfPrev = 0;
@@ -361,26 +375,24 @@ public class RenderFile : MonoBehaviour {
 
 						for(int x = 0; x < groupsInXfbin; x++)
 						{
-                            g.TrianglesPerGroup.Add(0);
+                            trisGroup.Add(0);
+                            //g.TrianglesPerGroup.Add(0);
+                            g.TrianglesPerGroup.Add(GroupTris[x]);
 
                             int verticesofprev = 0;
-							if(x != 0)
-							{
-								verticesofprev = VerticesPerGroup[x - 1];
-							}
+							if(x > 0) verticesofprev = VerticesPerGroup[x - 1];
 							totalVertsOfPrev = totalVertsOfPrev + verticesofprev;
 
 							int startIndexOfTriangleFile = 0;
-							if(x != 0)
-							{
-								startIndexOfTriangleFile = TrianglesPerGroup[x - 1];
-							}
+							if(x > 0) startIndexOfTriangleFile = GroupTris[x - 1];
+
 							prevTriangles = prevTriangles + startIndexOfTriangleFile;
 							startIndexOfTriangleFile = prevTriangles;
 
 							List<byte> SubSectionOfTriangleFile = new List<byte>();
 
-							for(int i = 0; i < TrianglesPerGroup[x]; i++)
+                            //MessageBox.Show("T:" + startIndexOfTriangleFile.ToString("X2") + ", TriFile: " + triangleFile.Length.ToString("X2") + ", i: " + GroupTris[0].ToString("X2"));
+							for(int i = 0; i < GroupTris[x]; i++)
 							{
 								SubSectionOfTriangleFile.Add(triangleFile[startIndexOfTriangleFile + i]);
 							}
@@ -422,7 +434,7 @@ public class RenderFile : MonoBehaviour {
 									Triangles_.Add(tri);
 								}
 
-								bool invert = true;
+                                bool invert = true;
                                 if (x % 1 == 0) invert = false;
 
 								for(int h = 0; h < Triangles_.Count; h++)
@@ -439,12 +451,13 @@ public class RenderFile : MonoBehaviour {
 										meshTriangles.Add((int)Triangles_[h].y);
 										meshTriangles.Add((int)Triangles_[h].z);
 									}
-                                    g.TrianglesPerGroup[x] = g.TrianglesPerGroup[x] + 1;
+                                    trisGroup[x] = trisGroup[x] + 1;
+                                    //g.TrianglesPerGroup[x] = g.TrianglesPerGroup[x] + 1;
 
                                     invert = !invert;
 								}
-							}
-						}
+                            }
+                        }
 						mf.mesh.triangles = meshTriangles.ToArray();
 					}
 				}
@@ -742,13 +755,13 @@ public class RenderFile : MonoBehaviour {
 		}
 	}
 
-	public void SaveModelToXfbin(string path__, bool saveShit = false)
+	public void SaveModelToXfbin(string path__)
 	{
-        if(groupsInXfbin > groupCount)
+        /*if(groupsInXfbin > groupCount)
         {
             MessageBox.Show("This .xfbin needs " + groupsInXfbin.ToString() + " groups, while your imported mesh has only " + groupCount.ToString() + ".\nIn order to save this mesh, import a model with the same number of groups as the original.");
             return;
-        }
+        }*/
 
 		try
 		{
@@ -768,7 +781,7 @@ public class RenderFile : MonoBehaviour {
 			meshVertices = mf.mesh.vertices.ToList();
 
 			// Copy the old vertex list
-			if(saveShit || GameObject.Find("Save Vertices").GetComponent<Toggle>().isOn == true)
+			if(GameObject.Find("Save Vertices").GetComponent<Toggle>().isOn == true)
 			{
 				for(int x = 0; x < VertexCount; x++)
 				{
@@ -833,7 +846,14 @@ public class RenderFile : MonoBehaviour {
 
 						vertexFileNew[0x10 + (byteLength * x)] = NZA[0];
 						vertexFileNew[0x11 + (byteLength * x)] = NZA[1];
-					}
+
+                        vertexFileNew[0x12 + (byteLength * x)] = 0;
+                        vertexFileNew[0x13 + (byteLength * x)] = 0;
+                        vertexFileNew[0x14 + (byteLength * x)] = 0;
+                        vertexFileNew[0x15 + (byteLength * x)] = 0;
+                        vertexFileNew[0x16 + (byteLength * x)] = 0xFF;
+                        vertexFileNew[0x17 + (byteLength * x)] = 0xFF;
+                    }
 					else if(byteLength == 0x40)
 					{
 						// BONE DATA
@@ -939,9 +959,9 @@ public class RenderFile : MonoBehaviour {
 				}
 			}
 
-			if(saveShit || GameObject.Find("Save UV").GetComponent<Toggle>().isOn == true)
+			if(GameObject.Find("Save UV").GetComponent<Toggle>().isOn == true)
 			{
-				if((saveShit || GameObject.Find("Save Vertices").GetComponent<Toggle>().isOn) || GameObject.Find("Model Data").transform.childCount <= VertexCount)
+				if(GameObject.Find("Save Vertices").GetComponent<Toggle>().isOn || GameObject.Find("Model Data").transform.childCount <= VertexCount)
 				{
 					for(int x = 0; x < TextureUVs.Count; x++)
 					{
@@ -1040,7 +1060,7 @@ public class RenderFile : MonoBehaviour {
 			}
 
             List<int> endOfTriangles = new List<int>();
-            if (saveShit || GameObject.Find("Save Triangles").GetComponent<Toggle>().isOn == true)
+            if (GameObject.Find("Save Triangles").GetComponent<Toggle>().isOn == true)
 			{
                 GroupSelection g = GetComponent<GroupSelection>();
                 int remove = 0;
@@ -1048,7 +1068,7 @@ public class RenderFile : MonoBehaviour {
                 int prevTriangles = g.TrianglesPerGroup[actualGroup_];
 
                 int TriangleTotal = 0;
-                for(int x = 0; x < groupsInXfbin; x++)
+                for(int x = 0; x < groupCount; x++) // GROUP CRAP
                 {
                     TriangleTotal = TriangleTotal + g.TrianglesPerGroup[x];
                     //MessageBox.Show("G" + x.ToString() + ": " + g.TrianglesPerGroup[x].ToString("X2"));
@@ -1077,6 +1097,7 @@ public class RenderFile : MonoBehaviour {
                         //MessageBox.Show("Nos pasamos pavo");
                         endOfTriangles.Add(triangleFileNew.Count);
                         //MessageBox.Show("Added end at " + triangleFileNew.Count.ToString("X2"));
+                        //MessageBox.Show("actualg = " + actualGroup_.ToString())
                         remove = remove + g.Groups[actualGroup_].Count;
                         actualGroup_++;
                         prevTriangles = prevTriangles + g.TrianglesPerGroup[actualGroup_];
@@ -1357,9 +1378,12 @@ public class RenderFile : MonoBehaviour {
 				}
 			}
 
-			int newNDP3Size = newNDP3File.Count + OriginalNDP3Size - 48 - firstSectionSize_ - triangleFile.Length - textureMapFile.Length - fileBytes.Length;
+            //int newNDP3Size = newNDP3File.Count + OriginalNDP3Size - 48 - firstSectionSize_ - triangleFile.Length - textureMapFile.Length - fileBytes.Length;
+            int nameSize = OriginalNDP3Size - 0x30 - firstSectionSize_ - OriginalTriangleSectionSize - textureMapFile.Length - fileBytes.Length;
+            //MessageBox.Show("name len: " + nameSize.ToString("X2"));
+            int newNDP3Size = newNDP3File.Count + nameSize;
 
-			List<byte> newXfbinFile = new List<byte>();
+            List<byte> newXfbinFile = new List<byte>();
 
 			// Copy old .xfbin file until ndp3
 			for(int x = 0; x < NDP3Index; x++)
@@ -1446,7 +1470,7 @@ public class RenderFile : MonoBehaviour {
 			}
 
 			// Copy original name and rest of xfbin 
-			for(int x = NDP3Index + (0x30 + firstSectionSize_ + triangleFile.Length + textureMapFile.Length + fileBytes.Length); x < OriginalXfbin.Length; x++)
+			for(int x = NDP3Index + (0x30 + firstSectionSize_ + OriginalTriangleSectionSize + textureMapFile.Length + fileBytes.Length); x < OriginalXfbin.Length; x++)
 			{
 				newXfbinFile.Add(OriginalXfbin[x]);
 			}
@@ -1873,21 +1897,21 @@ public class RenderFile : MonoBehaviour {
         }
 	}
 
-	public void ChangeWeight(int vertex, int number, float boneID)
+	public void ChangeWeight(int vertex, int number, float weightID)
 	{
         switch (number)
         {
             case 0:
-                vertexBone[vertex] = new Vector4((float)boneID, vertexBone[vertex].y, vertexBone[vertex].z, vertexBone[vertex].w);
+                vertexWeight[vertex] = new Vector4((float)weightID, vertexWeight[vertex].y, vertexWeight[vertex].z, vertexWeight[vertex].w);
                 break;
             case 1:
-                vertexBone[vertex] = new Vector4(vertexBone[vertex].x, (float)boneID, vertexBone[vertex].z, vertexBone[vertex].w);
+                vertexWeight[vertex] = new Vector4(vertexWeight[vertex].x, (float)weightID, vertexWeight[vertex].z, vertexWeight[vertex].w);
                 break;
             case 2:
-                vertexBone[vertex] = new Vector4(vertexBone[vertex].x, vertexBone[vertex].y, (float)boneID, vertexBone[vertex].w);
+                vertexWeight[vertex] = new Vector4(vertexWeight[vertex].x, vertexWeight[vertex].y, (float)weightID, vertexWeight[vertex].w);
                 break;
             case 3:
-                vertexBone[vertex] = new Vector4(vertexBone[vertex].x, vertexBone[vertex].y, vertexBone[vertex].z, (float)boneID);
+                vertexWeight[vertex] = new Vector4(vertexWeight[vertex].x, vertexWeight[vertex].y, vertexWeight[vertex].z, (float)weightID);
                 break;
         }
     }
@@ -2050,73 +2074,92 @@ public class RenderFile : MonoBehaviour {
 	    return I2B(sign | ((fbits & 0x7fffff | 0x800000) + (0x800000 >> val - 102) >> 126 - val));
 	}
 
-	public void ExportToObj(string path_obj)
-	{
-		Transform ModelDataTransform;
-		ModelDataTransform = GameObject.Find("Model Data").GetComponent<Transform>();
+    public void ExportToObj(string path_obj)
+    {
+        Transform ModelDataTransform;
+        ModelDataTransform = GameObject.Find("Model Data").GetComponent<Transform>();
 
-		List<string> objModelLines = new List<string>();
+        List<string> objModelLines = new List<string>();
 
-		objModelLines.Add("# Obj exported by UNS4 Model Editor by Tormunds");
-		objModelLines.Add("\n");
+        objModelLines.Add("# Obj exported by UNS4 Model Editor by Tormunds");
+        objModelLines.Add("\n");
 
-		for(int x = 0; x < VertexCount; x++)
-		{
-			objModelLines.Add("v " + (meshVertices[x].x * -1).ToString().Replace(',','.') + " " + meshVertices[x].y.ToString().Replace(',', '.') + " " + meshVertices[x].z.ToString().Replace(',', '.'));
-		}
-		objModelLines.Add("# " + VertexCount.ToString() + " vertices");
+        for (int x = 0; x < VertexCount; x++)
+        {
+            objModelLines.Add("v " + (meshVertices[x].x * -1).ToString().Replace(',', '.') + " " + meshVertices[x].y.ToString().Replace(',', '.') + " " + meshVertices[x].z.ToString().Replace(',', '.'));
+        }
+        objModelLines.Add("# " + VertexCount.ToString() + " vertices");
 
-		objModelLines.Add("\n");
+        objModelLines.Add("\n");
 
-		for(int x = 0; x < mf.mesh.uv.Length; x++)
-		{
-			if(mf.mesh.uv.Length >= x + 1)
-			{
-				objModelLines.Add("vt " + mf.mesh.uv[x].x.ToString().Replace(',', '.') + " " + (mf.mesh.uv[x].y * -1).ToString().Replace(',', '.'));
-			}
-			else
-			{
-				objModelLines.Add("vt 0 0");
-			}
-		}
-		objModelLines.Add("# " + VertexCount.ToString() + " texture coordinates");
+        for (int x = 0; x < mf.mesh.uv.Length; x++)
+        {
+            if (mf.mesh.uv.Length >= x + 1)
+            {
+                objModelLines.Add("vt " + mf.mesh.uv[x].x.ToString().Replace(',', '.') + " " + (mf.mesh.uv[x].y * -1).ToString().Replace(',', '.'));
+            }
+            else
+            {
+                objModelLines.Add("vt 0 0");
+            }
+        }
+        objModelLines.Add("# " + VertexCount.ToString() + " texture coordinates");
 
-		objModelLines.Add("\n");
+        objModelLines.Add("\n");
 
-		for(int x = 0; x < mf.mesh.normals.Length; x++)
-		{
-			objModelLines.Add("vn " + (mf.mesh.normals[x] * -1).x.ToString().Replace(',', '.') + " " + (mf.mesh.normals[x].y).ToString().Replace(',', '.') + " " + mf.mesh.normals[x].z.ToString().Replace(',', '.'));
-		}
+        for (int x = 0; x < mf.mesh.normals.Length; x++)
+        {
+            objModelLines.Add("vn " + (mf.mesh.normals[x] * -1).x.ToString().Replace(',', '.') + " " + (mf.mesh.normals[x].y).ToString().Replace(',', '.') + " " + mf.mesh.normals[x].z.ToString().Replace(',', '.'));
+        }
 
-		objModelLines.Add("# " + VertexCount.ToString() + " normals");
+        objModelLines.Add("# " + VertexCount.ToString() + " normals");
 
-		objModelLines.Add("\n");
+        objModelLines.Add("\n");
 
-		objModelLines.Add("g Mesh01");
-		objModelLines.Add("s 1");
-	
-		int a = 0;
-		int triNum = mf.mesh.triangles.Length / 3;
+        int a = 0;
+        int triNum = mf.mesh.triangles.Length / 3;
+        int[] groupCounts = GetComponent<GroupSelection>().TrianglesPerGroup.ToArray();
 
-		while(a < mf.mesh.triangles.Length - 3)
-		{
-			objModelLines.Add("f " + 
-			(mf.mesh.triangles[2 + a] + 1).ToString() + "/" + 
-			(mf.mesh.triangles[2 + a] + 1).ToString() + "/" + 
-			(mf.mesh.triangles[2 + a] + 1).ToString() + " " + 
+        for (int x = 0; x < groupsInXfbin; x++)
+        {
+            groupCounts[x] = trisGroup[x] * 3;
+        }
 
-			(mf.mesh.triangles[1 + a] + 1).ToString() + "/" + 
-			(mf.mesh.triangles[1 + a] + 1).ToString() + "/" + 
-			(mf.mesh.triangles[1 + a] + 1).ToString() + " " + 
+        objModelLines.Add("g Mesh01");
+        objModelLines.Add("s 1");
+        int meshes = 1;
 
-			(mf.mesh.triangles[0 + a] + 1).ToString() + "/" + 
-			(mf.mesh.triangles[0 + a] + 1).ToString() + "/" + 
-			(mf.mesh.triangles[0 + a] + 1).ToString());
-			a = a + 3;
-		}
-		objModelLines.Add("# " + (mf.mesh.triangles.Length / 3).ToString() + " triangles");
+        MessageBox.Show((mf.mesh.triangles.Length / 3).ToString("X2"));
 
-		try
+        while (a < mf.mesh.triangles.Length)
+        {
+            /*for(int x = 0; x < groupsInXfbin; x++)
+            {
+                if(a == groupCounts[x])
+                {
+                    meshes++;
+                    objModelLines.Add("g Mesh0" + meshes.ToString());
+                    MessageBox.Show(a.ToString());
+                }
+            }*/
+
+            objModelLines.Add("f " +
+            (mf.mesh.triangles[2 + a] + 1).ToString() + "/" +
+            (mf.mesh.triangles[2 + a] + 1).ToString() + "/" +
+            (mf.mesh.triangles[2 + a] + 1).ToString() + " " +
+
+            (mf.mesh.triangles[1 + a] + 1).ToString() + "/" +
+            (mf.mesh.triangles[1 + a] + 1).ToString() + "/" +
+            (mf.mesh.triangles[1 + a] + 1).ToString() + " " +
+
+            (mf.mesh.triangles[0 + a] + 1).ToString() + "/" +
+            (mf.mesh.triangles[0 + a] + 1).ToString() + "/" +
+            (mf.mesh.triangles[0 + a] + 1).ToString());
+            a = a + 3;
+        }
+        objModelLines.Add("# " + (mf.mesh.triangles.Length / 3).ToString() + " triangles");
+
+        try
 		{
 			File.WriteAllLines(path_obj, objModelLines.ToArray());
 			ConsoleMessage("\n<color=yellow>Model exported correctly.</color>");
@@ -2788,10 +2831,14 @@ public class RenderFile : MonoBehaviour {
 
             List<Vector4> oldVertexBone = new List<Vector4>();
             List<Vector4> oldVertexWeight = new List<Vector4>();
-            for (int x = 0; x < oldMeshVertices.Count; x++)
+
+            if(byteLength == 0x40)
             {
-                oldVertexBone.Add(vertexBone[x]);
-                oldVertexWeight.Add(vertexWeight[x]);
+                for (int x = 0; x < oldMeshVertices.Count; x++)
+                {
+                    oldVertexBone.Add(vertexBone[x]);
+                    oldVertexWeight.Add(vertexWeight[x]);
+                }
             }
 
             selectedVertex.Clear();
@@ -2875,7 +2922,8 @@ public class RenderFile : MonoBehaviour {
             }
             else
             {
-                dialog = MessageBox.Show("[Experimental] Do you want to try rigging this model automatically?", "Auto-rigger", MessageBoxButtons.YesNo);
+                dialog = DialogResult.No;
+                if (byteLength == 0x40) dialog = MessageBox.Show("[Experimental] Do you want to try rigging this model automatically?", "Auto-rigger", MessageBoxButtons.YesNo);
 
                 /*dialog = MessageBox.Show("Do you want to fill all the bones with 0s?", "Bone importing", MessageBoxButtons.YesNo);
 
@@ -3577,6 +3625,8 @@ public class RenderFile : MonoBehaviour {
                 }
             }
 
+            if (groupCount == 0) groupCount = 1;
+            groupCount = groupsInObj.Count;
             GetComponent<GroupSelection>().Groups = groupsInObj;
 
             if (meshVertices.Count == 0)
@@ -3624,7 +3674,7 @@ public class RenderFile : MonoBehaviour {
             }
 
             // AUTO RIGGER STUFF (EXPERIMENTAL)
-            if(dialog == DialogResult.Yes)
+            if(dialog == DialogResult.Yes && byteLength == 0x40)
             {
                 //MessageBox.Show("Auto rigging...");
                 float autorigger_closestdistance = -1;

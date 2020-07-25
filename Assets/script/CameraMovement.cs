@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System;
+using UnityEngine.UI;
 
 public class CameraMovement : MonoBehaviour
 {
     public RenderFile r;
 
+    public GameObject modelData;
     // Normal camera
     public bool canMove = false;
     public GameObject cameraObject;
@@ -27,9 +29,11 @@ public class CameraMovement : MonoBehaviour
 
     // Box for selection
     public GameObject box;
+    public GameObject SelectionSphere;
 
     void Start()
     {
+        SelectionSphere = GameObject.Find("Selection Sphere");
         r = this.GetComponent<RenderFile>();
 
         if (File.Exists(UnityEngine.Application.dataPath + "\\cfg_sensitivity.cfg"))
@@ -46,6 +50,7 @@ public class CameraMovement : MonoBehaviour
         box.GetComponent<Rigidbody>().freezeRotation = true;
     }
 
+    public LayerMask raycastLayer;
     void Update()
     {
         if (r.CommandInput.isFocused == true || r.fileOpen == false || Input.GetMouseButton(0))
@@ -57,17 +62,68 @@ public class CameraMovement : MonoBehaviour
             canMove = true;
         }
 
+        if(PointCamera.gameObject.activeSelf == false)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Debug.DrawRay(ray.origin, ray.direction, Color.white);
+            RaycastHit h;
+            bool hit = false;
+            if (Physics.Raycast(ray.origin, ray.direction, out h, 1000, raycastLayer)) hit = true;
+
+            if (hit == true)
+            {
+                if (r.WindowOpen == false && r.inCommand == false)
+                {
+                    if (h.transform.gameObject.GetComponent<VertexObject>() != null)
+                    {
+                        int vert = h.transform.GetSiblingIndex();
+                        switch (r.byteLength)
+                        {
+                            case 64:
+                                GameObject.Find("VERTEXDATA").GetComponent<Text>().text =
+                                    "VERTEX " + h.transform.gameObject.name +
+                                    ":\nX = " + transform.position.x +
+                                    "\nY = " + transform.position.y +
+                                    "\nZ = " + transform.position.z +
+                                    "\n" +
+                                    r.vertexBone[vert].x.ToString() + " " +
+                                    r.vertexBone[vert].y.ToString() + " " +
+                                    r.vertexBone[vert].z.ToString() + " " +
+                                    r.vertexBone[vert].w.ToString() +
+                                    "\n\nWeights:" +
+                                    "\nX = " + r.vertexWeight[vert].x.ToString() +
+                                    "\nY = " + r.vertexWeight[vert].y.ToString() +
+                                    "\nZ = " + r.vertexWeight[vert].z.ToString() +
+                                    "\nW = " + r.vertexWeight[vert].w.ToString();
+                                break;
+                            case 32:
+                            case 28:
+                                GameObject.Find("VERTEXDATA").GetComponent<Text>().text =
+                                    "VERTEX " + this.name + ":\nX = " + transform.position.x + "\nY = " + transform.position.y + "\nZ = " + transform.position.z;
+                                break;
+                        }
+                    }
+
+                    if (Input.GetMouseButton(0)) SelectionSphere.transform.position = h.point;
+                }
+            }
+        }
+
         if (Input.GetKeyDown(KeyCode.E) && r.fileOpen && r.WindowOpen == false && r.CommandInput.text == "" && mode == false)
         {
             if (PointCamera.gameObject.activeSelf == false)
             {
                 mainCamera.gameObject.SetActive(false);
                 PointCamera.gameObject.SetActive(true);
+                modelData.transform.rotation = Quaternion.Euler(-90, 0, 0);
+                GameObject.Find("RENDERED MESH").transform.rotation = Quaternion.Euler(-90, 0, 0);
             }
             else
             {
                 mainCamera.gameObject.SetActive(true);
                 PointCamera.gameObject.SetActive(false);
+                modelData.transform.rotation = Quaternion.Euler(0, 0, 0);
+                GameObject.Find("RENDERED MESH").transform.rotation = Quaternion.Euler(0, 0, 0);
             }
         }
 
@@ -171,9 +227,12 @@ public class CameraMovement : MonoBehaviour
         }
     }
 
+    bool isMoving = false;
     void FixedUpdate()
     {
         if (!(canMove && r.inCommand == false && r.WindowOpen == false)) return;
+
+        isMoving = false;
 
         if (mainCamera.gameObject.activeSelf)
         {
@@ -187,34 +246,42 @@ public class CameraMovement : MonoBehaviour
             }
             if (Input.GetAxis("Mouse ScrollWheel") > 0f)
             {
+                isMoving = true;
                 cameraObject.transform.position = cameraObject.transform.position + mainCamera.transform.forward * 100 * Time.deltaTime;
             }
             else if (Input.GetAxis("Mouse ScrollWheel") < 0f)
             {
+                isMoving = true;
                 cameraObject.transform.position = cameraObject.transform.position - mainCamera.transform.forward * 100 * Time.deltaTime;
             }
             if (Input.GetKey(KeyCode.W))
             {
+                isMoving = true;
                 cameraObject.transform.position = cameraObject.transform.position + mainCamera.transform.forward * CameraSpeed * Time.deltaTime;
             }
             if (Input.GetKey(KeyCode.S))
             {
+                isMoving = true;
                 cameraObject.transform.position = cameraObject.transform.position - mainCamera.transform.forward * CameraSpeed * Time.deltaTime;
             }
             if (Input.GetKey(KeyCode.A))
             {
+                isMoving = true;
                 cameraObject.transform.position = cameraObject.transform.position - mainCamera.transform.right * CameraSpeed * Time.deltaTime;
             }
             if (Input.GetKey(KeyCode.D))
             {
+                isMoving = true;
                 cameraObject.transform.position = cameraObject.transform.position + mainCamera.transform.right * CameraSpeed * Time.deltaTime;
             }
             if (Input.GetKey(KeyCode.X))
             {
+                isMoving = true;
                 cameraObject.transform.position = cameraObject.transform.position + Vector3.up * CameraSpeed * Time.deltaTime;
             }
             if (Input.GetKey(KeyCode.C))
             {
+                isMoving = true;
                 cameraObject.transform.position = cameraObject.transform.position - Vector3.up * CameraSpeed * Time.deltaTime;
             }
 
@@ -230,6 +297,7 @@ public class CameraMovement : MonoBehaviour
             // PRESSING RIGHT CLICK TO ROTATE THE CAMERA
             if (Input.GetMouseButton(1))
             {
+                //isMoving = true;
                 UnityEngine.Cursor.lockState = CursorLockMode.Locked;
             }
             else
@@ -260,20 +328,33 @@ public class CameraMovement : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.W))
             {
+                isMoving = true;
                 PointCamera.transform.position += PointCamera.transform.up * CameraSpeed * Time.deltaTime;
             }
             if (Input.GetKey(KeyCode.S))
             {
+                isMoving = true;
                 PointCamera.transform.position -= PointCamera.transform.up * CameraSpeed * Time.deltaTime;
             }
             if (Input.GetKey(KeyCode.A))
             {
+                isMoving = true;
                 PointCamera.transform.position -= PointCamera.transform.right * CameraSpeed * Time.deltaTime;
             }
             if (Input.GetKey(KeyCode.D))
             {
+                isMoving = true;
                 PointCamera.transform.position += PointCamera.transform.right * CameraSpeed * Time.deltaTime;
             }
+        }
+
+        if (isMoving == false)
+        {
+            modelData.SetActive(true);
+        }
+        else
+        {
+            modelData.SetActive(false);
         }
 
         Arrows.transform.rotation = Quaternion.Euler(Vector3.forward);
